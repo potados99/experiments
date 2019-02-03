@@ -19,10 +19,14 @@ main.c including analysis.h
 
 ## Conclusion
 
-
 int *a[]        -> int **
+
 int *a[4]       -> int **
+
 int a[][4]      -> int (*)[4]
+
 int a[][]       -> Compile error
+
 int (*a)[4]     -> int (*)[4]
+
 int (*a)[]      -> Not good
