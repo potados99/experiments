@@ -1,0 +1,19 @@
+#!/bin/zsh
+
+if [ $# -eq 0 ]; then
+	echo "Usage: create-doc [directory]"
+	exit 1
+fi
+
+dirname=$1
+if ! [ -d $1 ]; then
+	echo "Directory $dirname does not exist."
+	exit 1
+fi
+
+if ! [ -f .README.md ]; then
+	echo "Reference document does not exist."
+	exit 1
+fi
+
+cp -i .README.md $dirname/README.md
