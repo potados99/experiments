@@ -32,9 +32,9 @@ void rand_test_1() {
 	int delay = 30000;
 
 	for (int i = 0; i < SIZE; ++i) {
-		srand(rand() + i * j + j);
+		srand(rand() + i + 5);
 		delay = (rand() % 3 - 1) ? delay + (500 * (rand() % 11 + 15)) : delay - (500 * (rand() % 11 + 15));
-		delay = (delay < 0) delay * -1 : delay;
+		delay = (delay < 0) ? (delay * -1) : delay;
 
 		for (int j = 0; j < SIZE; ++j) {
 			srand(rand() + i * j + j);
