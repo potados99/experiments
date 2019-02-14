@@ -35,7 +35,8 @@ void rand_test_1() {
 		delay = (rand() % 3 - 1) ? delay + 10000 : delay - 10000;
 
 		for (int j = 0; j < SIZE; ++j) {
-			srand(time(NULL) + i * j + j);
+//			srand(time(NULL) + i * j + j);
+			srand(rand() + i * j + j);
 			num = (rand() % SIZE) + 1;
 			print_at_position('*', num);
 			usleep(delay);
