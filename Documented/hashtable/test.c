@@ -33,7 +33,6 @@ void rand_test_1() {
 
 	for (int i = 0; i < SIZE; ++i) {
 		delay = (rand() % 3 - 1) ? delay + 10000 : delay - 10000;
-		printf("Change to %d!\n", delay);
 
 		for (int j = 0; j < SIZE; ++j) {
 			srand(time(NULL) + i * j + j);
