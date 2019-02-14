@@ -32,10 +32,11 @@ void rand_test_1() {
 	int delay = 30000;
 
 	for (int i = 0; i < SIZE; ++i) {
-		delay = (rand() % 3 - 1) ? delay + 10000 : delay - 10000;
+		srand(rand() + i * j + j);
+		delay = (rand() % 3 - 1) ? delay + (500 * (rand() % 11 + 15)) : delay - (500 * (rand() % 11 + 15));
+		delay = (delay < 0) delay * -1 : delay;
 
 		for (int j = 0; j < SIZE; ++j) {
-//			srand(time(NULL) + i * j + j);
 			srand(rand() + i * j + j);
 			num = (rand() % SIZE) + 1;
 			print_at_position('*', num);
@@ -52,7 +53,7 @@ void rand_test_2() {
 		memset(positions, 0, sizeof(positions));
 
 		for (int j = 0; j < SIZE; ++ j) {
-			srand(time(NULL) + i * j + j);
+			srand(rand() + i * j + j);
 			num = (rand() % SIZE) + 1; /* 1 to 100 */
 			positions[num] += 1;
 		}
