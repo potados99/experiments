@@ -16,4 +16,4 @@ $(TARGET): $(OBJECT)
 	$(COMPILE.c) $<
 
 clean:
-	rm *.o $(TARGET)
+	rm *.o $(TARGET)*
