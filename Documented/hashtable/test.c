@@ -5,11 +5,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
 
 #define SIZE 170
 
-static void print_at_position(char symbol, int position) {
+static inline void print_at_position(char symbol, int position) {
 	putchar('|');
 
 	for (int i = 0; i < position - 1; ++i) {
@@ -28,21 +27,31 @@ static void print_at_position(char symbol, int position) {
 }
 
 void rand_test_1() {
-	int num;
+	int num = 0;
 	int delay = 30000;
+	int addition = 0;
 
 	for (int i = 0; i < SIZE; ++i) {
 		srand(rand() + i + 5);
-		delay = (rand() % 3 - 1) ? delay + (500 * (rand() % 11 + 15)) : delay - (500 * (rand() % 11 + 15));
-		delay = (delay < 0) ? (delay * -1) : delay;
+		addition = (rand() % 11 + 15);
+		delay = (rand() % 10 > 4) ?
+		delay + (500 * addition) :
+		delay - (500 * addition);
+		delay = (delay < 0) ?
+		delay * -1 :
+		delay;
+		delay = (delay > 70000) ?
+		delay / 2 :
+		delay;
 
 		for (int j = 0; j < SIZE; ++j) {
 			srand(rand() + i * j + j);
 			num = (rand() % SIZE) + 1;
+
 			print_at_position('*', num);
-			usleep(delay);
-		}
-	}
+			USLEEP(delay);
+		} /* end of for j */
+	} /* end of for i */
 }
 
 void rand_test_2() {
@@ -66,10 +75,17 @@ void rand_test_2() {
 
 		putchar('|');
 		putchar('\n');
-		usleep(50000);
+		USLEEP(50000);
 	}
 }
 
 void hash_dist_test() {
+	int num = 0;
+	int delay = 30000;
 
+	for (int i = 1; i; ++i) {
+		num = (hash(i) % SIZE) + 1;
+		print_at_position('*', num);
+		USLEEP(delay);
+	}
 }
