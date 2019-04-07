@@ -25,3 +25,9 @@ char **alloc_strs(char **buffer, int count) {
 	}
 	return strings;
 }
+
+void free_strs(char *strings[]) {
+	for (int i = 0; strings[i]; ++i) {
+		free(strings[i]);
+	}
+}

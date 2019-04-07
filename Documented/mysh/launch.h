@@ -1,6 +1,6 @@
 #ifndef launch_h
 #define launch_h
 
-int launch(char *const argv[], int bg);
+int launch(char **argv);
 
 #endif

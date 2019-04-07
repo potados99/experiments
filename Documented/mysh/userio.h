@@ -6,7 +6,8 @@
 void clear();
 
 void show_prompt();
+void say_prompt(char *message);
 
-char *const *get_strings(FILE *stream, int max, char *tokens);
+char **get_strings(FILE *stream, int max, char *tokens);
 
 #endif

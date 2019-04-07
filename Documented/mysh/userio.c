@@ -7,6 +7,11 @@
 
 #include "str.h"
 
+static char ignore[] = {
+	'\n',
+	'\t'
+};
+
 void clear() {
 	printf("\033[H\033[J");
 }
@@ -20,18 +25,26 @@ void show_prompt() {
 	gethostname(hostname_buf, sizeof(hostname_buf));
 	getcwd(cwd_buf, sizeof(cwd_buf));
 	
-
 	printf("<%s@%s> %s $ ", username_buf, hostname_buf, cwd_buf);
+	fflush(stdout);
 }
 
-char *const *get_strings(FILE *stream, int max, char *tokens) {
+void say_prompt(char *message) {
+	printf("\n%s\n", message);
+	show_prompt();
+	fflush(stdout);
+}
+
+char **get_strings(FILE *stream, int max, char *tokens) {
 
 	if (stream == NULL) return NULL;
 	if (max <= 0) return NULL;
 
 	char single_buf[max];
 	if (fgets(single_buf, sizeof(single_buf), stream) != single_buf) return NULL;
-	
+	rewind(stdin);
+	single_buf[strlen(single_buf) - 1] = '\0';
+
 	int n_strings = 0;
 	char **strings = (char **)malloc(sizeof(char *) * (n_strings + 1));
 
@@ -47,6 +60,16 @@ char *const *get_strings(FILE *stream, int max, char *tokens) {
 	}
 	
 	strings[n_strings] = NULL;
+
+
+	/*
+	int n_ignore = sizeof(ignore) / sizeof(char);
+	for (int i = 0; i < n_strings;
+	for (int i = 0; i < len; ++i) {
+		for (int j = 0; j < n_ignore; ++j) {
+		}
+	}
+*/
 
 	return strings;
 }

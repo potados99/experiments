@@ -1,6 +1,6 @@
 # Makefile boilerplate version 0.0.1 (20190204)
 
-TARGET = run
+TARGET = mysh
 
 CC = gcc
 CFLAGS = -Wall
@@ -16,4 +16,4 @@ $(TARGET): $(OBJECT)
 	$(COMPILE.c) $<
 
 clean:
-	rm *.o $(TARGET)*
+	rm *.o $(TARGET)
