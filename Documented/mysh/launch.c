@@ -11,6 +11,8 @@
 
 #include "builtin.h"
 #include "str.h"
+#include "flags.h"
+#include "userio.h"
 
 #include <signal.h>
 #include <sys/wait.h>
@@ -20,7 +22,7 @@
 extern int bg_pid;
 extern int fg_pid;
 extern int last;
-extern int enable_input;
+extern int ioflags;
 
 int launch(char **argv) {
 	if (argv == NULL) return -1;
@@ -84,7 +86,7 @@ int launch(char **argv) {
 		else {
 			fg_pid = pid;
 
-			enable_input = 0;
+			ioflags = SUB(ioflags, IOFL_IN);
 		/*
 			null_fd = open("/dev/null", O_RDONLY);
 			

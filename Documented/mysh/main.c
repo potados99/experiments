@@ -15,7 +15,7 @@ int fg_pid = 0;
 
 int last = 0;
 
-int enable_input = 1;
+uint8_t ioflags = 0;
 
 void proc_exit() {
 	int status;
@@ -37,7 +37,7 @@ void proc_exit() {
 
 				fg_pid = 0;
 
-				enable_input = 1;
+				ioflags = ADD(ioflags, IOFL_IN);
 
 				show_prompt();
 			}
@@ -64,19 +64,59 @@ void proc_exit() {
 		} while (pid == 0);		
 }
 
+void sig_handler(int sig) {
+	switch (sig) {
+		case SIGSEGV:
+			
+			exit(0);
+			break;
+	}
+}
+
+#include "mproc.h" 
+
 int main(int argc, char *const argv[]) {
 	
-	signal (SIGCHLD, proc_exit);
+
+	struct mproc processes[5] = {
+		{ .pid = 1, .flag = 5, .argv = NULL, .forw = NULL, .back = NULL},
+		{ .pid = 2, .flag = 4, .argv = NULL, .forw = NULL, .back = NULL},
+		{ .pid = 3, .flag = 3, .argv = NULL, .forw = NULL, .back = NULL},
+		{ .pid = 4, .flag = 2, .argv = NULL, .forw = NULL, .back = NULL},
+		{ .pid = 5, .flag = 1, .argv = NULL, .forw = NULL, .back = NULL}
+
+	};
+
+	struct mproc *procs = NULL;
+	mproc_insert(&procs, processes[0]);
+	struct mproc *start = mproc_insert(&procs, processes[1]);
+	mproc_append(&procs, processes[2]);
+
+	struct mproc *iter = start;
+	while (iter) {
+		printf("pid %d.\n", iter->pid);
+		iter = iter->forw;
+	}
+
+	return 0;
+
+	signal(SIGCHLD, proc_exit);
+
+	signal(SIGINT, sig_handler);
+	signal(SIGSEGV, sig_handler);
 	
 	char **cmd;
 	int result;
+
+	ioflags = ADD(IOFL_IN, IOFL_OUT);
 
 	clear();
 	show_prompt();
 
 	for (;;) {
-		if (!enable_input) continue;
-		
+		if (!HAS(ioflags, IOFL_IN)) continue;
+		if (!HAS(ioflags, IOFL_OUT)) continue; /* both IOFL_IN and IOFL_OUT required. */
+
 		cmd = get_strings(stdin, 128, " \t\n"); /* get strings tokenized by space character, from stdin. */
 		result = launch(cmd);
 	

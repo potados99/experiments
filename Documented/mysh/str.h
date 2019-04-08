@@ -6,4 +6,4 @@ char **alloc_strs(char **buffer, int count);
 
 void free_strs(char *strings[]);
 
-#endif
+#endif /* str_h */
