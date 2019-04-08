@@ -34,6 +34,7 @@ int main(int argc, char *const argv[]) {
 	
 	if (argc == 1) {
 		puts("No arguments.");
+		puts("Usage: runner command args...");
 		exit(0);
 	}
 		
