@@ -11,17 +11,16 @@
 #include <sys/wait.h>
 #include <sys/resource.h>
 
-int bg_pid = 0;
-int fg_pid = 0;
-
 struct mproc *procs = NULL;
-
 int last = 0;
-
 uint8_t ioflags = 0;
+
 
 void proc_exit() {
 	int status;
+	int result;
+	
+	int flag;
 	int pid;
 
 	if (procs == NULL) return;
@@ -32,35 +31,57 @@ void proc_exit() {
 		while (current) {
 			// iteration.
 			printf("This turn we will wait for: [%d]!\n", current->pid);
-			pid = waitpid(current->pid, &status, WNOHANG);
-			if (pid == -1) {
+
+			result = waitpid(current->pid, &status, WNOHANG);
+			flag = current->flag;
+			pid = current->pid;
+
+			if (result == -1) {
 				perror("waitpid() failed.");
 			}
-			else if (pid == 0) {
+			else if (result == 0) {
 				// still running.
 				// sleep(1);
+				puts("still running");
 			}
 			else {
 				// done!
 				
 				last = WEXITSTATUS(status);
-				ioflags = ADD(ioflags, IOFL_IN);
+				ioflags = ADD(ioflags, IOFL_IN); /* restore input. */
 
-				show_prompt();
+				if (HAS(flag, PRFL_BG)) {
+					char buf[64] = {0, };
+					sprintf(buf, "[background] %d done", pid);
+					say_prompt(buf);
+				}
+				else if (HAS(flag, PRFL_FG)) {
+					show_prompt();
+				}
+				else {
+					fprintf(stderr, "THIS CANNOT HAPPEN.\n");
+				}
 				
-				procs = current;
+				puts("haha");
 
-				if ((current = mproc_remove(&current)) == NULL) {
-					// if null, process iteration is done. do it again.
-					break;
+				current = mproc_remove(current);
+				if (current == NULL) {
+					/* no neighbor. list got empty. mission clear. */
+					
+					procs = NULL;
+					printf("clear?\n");
+					return;
 				}	
 				else {
+					printf("not clear?\n");
+					procs = current;
 					continue;
 				}
 			}
 
 			current = current->forw;
 		}
+		puts("whats up here?");
 
 	}
 
@@ -114,7 +135,6 @@ void proc_exit() {
 void sig_handler(int sig) {
 	switch (sig) {
 		case SIGSEGV:
-			
 			exit(0);
 			break;
 	}
@@ -146,10 +166,6 @@ int main(int argc, char *const argv[]) {
 
 	return 0;
 */
-
-
-
-
 
 	signal(SIGCHLD, proc_exit);
 

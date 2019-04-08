@@ -82,32 +82,24 @@ int launch(char **argv) {
 		struct mproc child = {
 			.argv = argv,
 			.pid = pid,
-			.flag = (background ? PROC_BG : PROC_FG)
+			.flag = (background ? PRFL_BG : PRFL_FG)
 		};
 
-		mproc_append(&procs, child);
+		procs = mproc_append(procs, child);
 
 		if (background) {
-		//	bg_pid = pid;
 			printf("[background] %d\n", pid);
 			
 			return RET_BG;
 		}
 		else {
-		//	fg_pid = pid;
+			ioflags = SUB(ioflags, IOFL_IN); /* temporarily disable input of parent. */
 
-			ioflags = SUB(ioflags, IOFL_IN);
-		/*
-			null_fd = open("/dev/null", O_RDONLY);
-			
-			dup2(null_fd, 0);
-		
-			close(null_fd);
-		*/
 			return RET_FG;
 		}
 			
 		return 0;
 	}
+
 	return -99;
 }

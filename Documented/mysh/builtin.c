@@ -51,7 +51,7 @@ int launch_builtin(const char *function, const char *param) {
 
 
 int builtin_cd(const char *path) {
-	char *validpath;
+	const char *validpath;
 	
 	if (path == NULL) {
 		struct passwd *pw = getpwuid(getuid());

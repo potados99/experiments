@@ -9,11 +9,6 @@
 
 extern int last;
 
-static char ignore[] = {
-	'\n',
-	'\t'
-};
-
 void clear() {
 	printf("\033[H\033[J");
 }
