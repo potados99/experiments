@@ -19,12 +19,9 @@
 #include <sys/wait.h>
 #include <sys/resource.h>
 
-
-extern int bg_pid;
-extern int fg_pid;
-extern int last;
-extern int ioflags;
-extern struct mproc *procs;
+extern struct mproc     *procs;
+extern int              last;
+extern int              ioflags;
 
 int launch(char **argv) {
 	if (argv == NULL) return -1;
@@ -103,3 +100,60 @@ int launch(char **argv) {
 
 	return -99;
 }
+
+void handle(void) {
+    /* wait processes */
+    int             status;
+    int             result;
+    
+    /* save mproc status */
+    struct mproc    *current;
+    int             flag;
+    int             pid;
+    
+    if (procs == NULL)
+        return;
+    
+    for (;;) {
+        
+        current = mproc_seek_bgn(procs);
+        
+        while (current) {
+            /* at least one process to handle. */
+            
+            result = waitpid(current->pid, &status, WNOHANG);
+            flag = current->flag;
+            pid = current->pid;
+            
+            if (result == -1) {
+                perror("waitpid() failed.");
+            }
+            else if (result == 0) {
+                /* still running */
+            }
+            else {
+                /* done! */
+                
+                last = WEXITSTATUS(status);
+                ioflags = ADD(ioflags, IOFL_IN); /* restore input. whatever foreground or background */
+                
+                if (HAS(flag, PRFL_BG))
+                    say_prompt("[background] %d done", pid);
+                
+                else if (HAS(flag, PRFL_FG))
+                    show_prompt();
+                
+                else
+                    fprintf(stderr, "THIS CANNOT HAPPEN.\n");
+                
+                if ((procs = current = mproc_remove(current)) == NULL)
+                    return;
+                else
+                    continue;
+            }
+            
+            current = current->forw;
+            
+        } /* end of while */
+    } /* end of endless for */
+} /* end of proc_exit() */

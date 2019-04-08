@@ -6,6 +6,4 @@
 
 #define HAS(X, Y) ((X) & (Y))
 
-
-
 #endif /* flags_h */

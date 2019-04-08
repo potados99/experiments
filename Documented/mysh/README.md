@@ -1,7 +1,13 @@
-# Experiment on []
+# The Bone Shell
 
-## Purpose
+## Why Bone Shell?
+It is just a skeletone. Nothing more than bones.
 
-## Sources
+## Features
+- Launch process.
+- Foreground & background task handling.
 
-## Conclusion
+Done. That's it.
+
+## Why?
+It is an assignment. :)

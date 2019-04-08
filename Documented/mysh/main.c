@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "launch.h"
 #include "str.h"
 #include "userio.h"
@@ -11,67 +7,20 @@
 #include <sys/wait.h>
 #include <sys/resource.h>
 
-struct mproc *procs = NULL;
-int last = 0;
-int ioflags = 0;
-
-void proc_exit() {
-	int status;
-	int result;
-	
-	int flag;
-	int pid;
-
-	if (procs == NULL) return;
-
-	for (;;) {
-        
-		struct mproc *current = mproc_seek_bgn(procs);
-
-		while (current) {
-            /* at least one process to handle. */
-
-			result = waitpid(current->pid, &status, WNOHANG);
-			flag = current->flag;
-			pid = current->pid;
-
-			if (result == -1) {
-				perror("waitpid() failed.");
-			}
-			else if (result == 0) {
-				/* still running */
-			}
-			else {
-				/* done! */
-				
-				last = WEXITSTATUS(status);
-				ioflags = ADD(ioflags, IOFL_IN); /* restore input. whatever foreground or background */
-
-				if (HAS(flag, PRFL_BG)) {
-                    say_prompt("[background] %d done", pid);
-				}
-				else if (HAS(flag, PRFL_FG)) {
-					show_prompt();
-				}
-				else {
-					fprintf(stderr, "THIS CANNOT HAPPEN.\n");
-				}
-				
-				current = mproc_remove(current);
-                procs = current;
-                
-                if (current == NULL) return;
-                else continue;
-			}
-
-			current = current->forw;
-            
-		} /* end of while */
-	} /* end of endless for */
-} /* end of proc_exit() */
+struct mproc        *procs = NULL;
+int                 last = 0;
+int                 ioflags = 0;
 
 void sig_handler(int sig) {
 	switch (sig) {
+        case SIGCHLD:
+            handle();
+            break;
+            
+        case SIGINT:
+            // nothing :)
+            break;
+            
 		case SIGSEGV:
 			exit(0);
 			break;
@@ -81,16 +30,14 @@ void sig_handler(int sig) {
 	}
 }
 
-
 int main(int argc, char *const argv[]) {
-
-	signal(SIGCHLD, proc_exit);
-
+    
+    char **cmd;
+    int result;
+    
+	signal(SIGCHLD, sig_handler);
 	signal(SIGINT, sig_handler);
 	signal(SIGSEGV, sig_handler);
-	
-	char **cmd;
-	int result;
 
 	ioflags = ADD(IOFL_IN, IOFL_OUT);
 
@@ -102,11 +49,20 @@ int main(int argc, char *const argv[]) {
 		if (!HAS(ioflags, IOFL_IN)) continue;
 		if (!HAS(ioflags, IOFL_OUT)) continue;
 
-        /* get strings tokenized by space character, from stdin. */
+        /* get tokenized strings from stdin. */
 		cmd = get_strings(stdin, 128, " \t\n");
 		result = launch(cmd);
 	
 		if (NEED_TO_SHOW_PROMPT(result)) {
+            /*
+             In case like:
+             1) Returned just after spawning background process. (RET_BG)
+             2) Command is a builtin function. (RET_BUILTIN)
+             3) User typed nothing. (RET_NONE)
+             
+             See launch() for more information.
+             */
+            
 			show_prompt();
 			free_strs(cmd);
 		}
