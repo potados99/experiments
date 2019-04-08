@@ -6,10 +6,10 @@
 #define IOFL_OUT 	0x01
 #define IOFL_IN 	0x02
 
-void clear();
+void clear_prompt(void);
 
-void show_prompt();
-void say_prompt(char *message);
+void show_prompt(void);
+void say_prompt(char *fmt, ...);
 
 char **get_strings(FILE *stream, int max, char *tokens);
 

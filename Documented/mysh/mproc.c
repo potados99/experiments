@@ -97,31 +97,32 @@ struct mproc *mproc_append(struct mproc *node, struct mproc data) {
 struct mproc *mproc_remove(struct mproc *node) {
 	if (node == NULL) return NULL;
 	
-	puts("hello");
 	struct mproc *origin = node;
 	struct mproc *next = node->forw;
 	struct mproc *before = node->back;
 	
+    if (origin->argv) free(origin->argv);
 	free(origin);
-	puts("freed.");
 
 	if (before && next) {
-		before->forw = next;
-		next->back = before;
-		puts("both is selected.");	
-		
+        before->forw = next;
+        next->back = before;
+        
 		return next;
 	}
 	else if (next) {
 		next->back = NULL;
-		puts("next is selected.");	
-		return next;
+
+        return next;
 	}
-	else /*before*/ {
+	else if (before) {
 		before->forw = NULL;
-		puts("before is selected.");	
-		return before;
+
+        return before;
 	}
+    else {
+        return NULL;
+    }
 }
 
 struct mproc *mproc_seek_bgn(struct mproc *node) {

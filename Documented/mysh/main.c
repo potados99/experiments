@@ -15,7 +15,6 @@ struct mproc *procs = NULL;
 int last = 0;
 int ioflags = 0;
 
-
 void proc_exit() {
 	int status;
 	int result;
@@ -26,11 +25,11 @@ void proc_exit() {
 	if (procs == NULL) return;
 
 	for (;;) {
+        
 		struct mproc *current = mproc_seek_bgn(procs);
 
 		while (current) {
-			// iteration.
-			printf("This turn we will wait for: [%d]!\n", current->pid);
+            /* at least one process to handle. */
 
 			result = waitpid(current->pid, &status, WNOHANG);
 			flag = current->flag;
@@ -40,20 +39,16 @@ void proc_exit() {
 				perror("waitpid() failed.");
 			}
 			else if (result == 0) {
-				// still running.
-				// sleep(1);
-				puts("still running");
+				/* still running */
 			}
 			else {
-				// done!
+				/* done! */
 				
 				last = WEXITSTATUS(status);
-				ioflags = ADD(ioflags, IOFL_IN); /* restore input. */
+				ioflags = ADD(ioflags, IOFL_IN); /* restore input. whatever foreground or background */
 
 				if (HAS(flag, PRFL_BG)) {
-					char buf[64] = {0, };
-					sprintf(buf, "[background] %d done", pid);
-					say_prompt(buf);
+                    say_prompt("[background] %d done", pid);
 				}
 				else if (HAS(flag, PRFL_FG)) {
 					show_prompt();
@@ -62,110 +57,32 @@ void proc_exit() {
 					fprintf(stderr, "THIS CANNOT HAPPEN.\n");
 				}
 				
-				puts("haha");
-
 				current = mproc_remove(current);
-				if (current == NULL) {
-					/* no neighbor. list got empty. mission clear. */
-					
-					procs = NULL;
-					printf("clear?\n");
-					return;
-				}	
-				else {
-					printf("not clear?\n");
-					procs = current;
-					continue;
-				}
+                procs = current;
+                
+                if (current == NULL) return;
+                else continue;
 			}
 
 			current = current->forw;
-		}
-		puts("whats up here?");
-
-	}
-
-
-/*
-	if (!bg_pid && !fg_pid) return;
-
-	if (fg_pid)
-		do {
-			if ((pid = waitpid(fg_pid, &status, WNOHANG)) == -1) {
-				perror("waitpid() failed.");
-			}
-			else if (pid == 0) {
-				// child still running.
-				sleep(1);
-			}
-			else {
-				last = WEXITSTATUS(status);
-
-				fg_pid = 0;
-
-				ioflags = ADD(ioflags, IOFL_IN);
-
-				show_prompt();
-			}
-		} while (pid == 0);
-	
-	else if (bg_pid)
-		do {
-			if ((pid = waitpid(bg_pid, &status, WNOHANG)) == -1) {
-				perror("waitpid() failed.");
-			}
-			else if (pid == 0) {
-				// child still running.
-				sleep(1);
-			}
-			else {
-				last = WEXITSTATUS(status);
-
-				char buf[64] = {0, };
-				sprintf(buf, "[background] %d done", bg_pid);
-				say_prompt(buf);
-				
-				bg_pid = 0;
-			}
-		} while (pid == 0);		
-*/
-
-}
+            
+		} /* end of while */
+	} /* end of endless for */
+} /* end of proc_exit() */
 
 void sig_handler(int sig) {
 	switch (sig) {
 		case SIGSEGV:
 			exit(0);
 			break;
+            
+        default:
+            break;
 	}
 }
 
 
 int main(int argc, char *const argv[]) {
-	
-/*
-	struct mproc processes[5] = {
-		{ .pid = 1, .flag = 5, .argv = NULL, .forw = NULL, .back = NULL},
-		{ .pid = 2, .flag = 4, .argv = NULL, .forw = NULL, .back = NULL},
-		{ .pid = 3, .flag = 3, .argv = NULL, .forw = NULL, .back = NULL},
-		{ .pid = 4, .flag = 2, .argv = NULL, .forw = NULL, .back = NULL},
-		{ .pid = 5, .flag = 1, .argv = NULL, .forw = NULL, .back = NULL}
-
-	};
-
-	struct mproc *procs = NULL;
-	mproc_insert(&procs, processes[0]);
-	struct mproc *start = mproc_insert(&procs, processes[1]);
-	mproc_append(&procs, processes[2]);
-
-	struct mproc *iter = start;
-	while (iter) {
-		printf("pid %d.\n", iter->pid);
-		iter = iter->forw;
-	}
-
-	return 0;
-*/
 
 	signal(SIGCHLD, proc_exit);
 
@@ -177,22 +94,22 @@ int main(int argc, char *const argv[]) {
 
 	ioflags = ADD(IOFL_IN, IOFL_OUT);
 
-	clear();
+	clear_prompt();
 	show_prompt();
 
 	for (;;) {
+        /* both IOFL_IN and IOFL_OUT required. */
 		if (!HAS(ioflags, IOFL_IN)) continue;
-		if (!HAS(ioflags, IOFL_OUT)) continue; /* both IOFL_IN and IOFL_OUT required. */
+		if (!HAS(ioflags, IOFL_OUT)) continue;
 
-		cmd = get_strings(stdin, 128, " \t\n"); /* get strings tokenized by space character, from stdin. */
+        /* get strings tokenized by space character, from stdin. */
+		cmd = get_strings(stdin, 128, " \t\n");
 		result = launch(cmd);
 	
 		if (NEED_TO_SHOW_PROMPT(result)) {
 			show_prompt();
 			free_strs(cmd);
 		}
-
-	//	free_strs(cmd); // not free here.
 	}
 
 	return 0;

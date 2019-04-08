@@ -4,12 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdarg.h>
 
 #include "str.h"
 
 extern int last;
 
-void clear() {
+void clear_prompt(void) {
 	printf("\033[H\033[J");
 }
 
@@ -22,13 +23,20 @@ void show_prompt() {
 	gethostname(hostname_buf, sizeof(hostname_buf));
 	getcwd(cwd_buf, sizeof(cwd_buf));
 
-
 	printf("<%s@%s> %s %s ", username_buf, hostname_buf, cwd_buf, last ? "$$":"$");
 	fflush(stdout);
 }
 
-void say_prompt(char *message) {
-	printf("\n%s\n", message);
+void say_prompt(char *fmt, ...) {
+    va_list vlist;
+    va_start(vlist, fmt);
+    
+    puts("");
+    vprintf(fmt, vlist);
+    puts("");
+
+    va_end(vlist);
+    
 	show_prompt();
 	fflush(stdout);
 }
