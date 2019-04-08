@@ -13,6 +13,7 @@
 #include "str.h"
 #include "flags.h"
 #include "userio.h"
+#include "mproc.h"
 
 #include <signal.h>
 #include <sys/wait.h>
@@ -23,6 +24,7 @@ extern int bg_pid;
 extern int fg_pid;
 extern int last;
 extern int ioflags;
+extern struct mproc *procs;
 
 int launch(char **argv) {
 	if (argv == NULL) return -1;
@@ -77,14 +79,22 @@ int launch(char **argv) {
 	else {
 		/* parent. */
 
+		struct mproc child = {
+			.argv = argv,
+			.pid = pid,
+			.flag = (background ? PROC_BG : PROC_FG)
+		};
+
+		mproc_append(&procs, child);
+
 		if (background) {
-			bg_pid = pid;
+		//	bg_pid = pid;
 			printf("[background] %d\n", pid);
 			
 			return RET_BG;
 		}
 		else {
-			fg_pid = pid;
+		//	fg_pid = pid;
 
 			ioflags = SUB(ioflags, IOFL_IN);
 		/*

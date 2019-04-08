@@ -5,6 +5,7 @@
 #include "launch.h"
 #include "str.h"
 #include "userio.h"
+#include "mproc.h" 
 
 #include <signal.h>
 #include <sys/wait.h>
@@ -12,6 +13,8 @@
 
 int bg_pid = 0;
 int fg_pid = 0;
+
+struct mproc *procs = NULL;
 
 int last = 0;
 
@@ -21,6 +24,48 @@ void proc_exit() {
 	int status;
 	int pid;
 
+	if (procs == NULL) return;
+
+	for (;;) {
+		struct mproc *current = mproc_seek_bgn(procs);
+
+		while (current) {
+			// iteration.
+			printf("This turn we will wait for: [%d]!\n", current->pid);
+			pid = waitpid(current->pid, &status, WNOHANG);
+			if (pid == -1) {
+				perror("waitpid() failed.");
+			}
+			else if (pid == 0) {
+				// still running.
+				// sleep(1);
+			}
+			else {
+				// done!
+				
+				last = WEXITSTATUS(status);
+				ioflags = ADD(ioflags, IOFL_IN);
+
+				show_prompt();
+				
+				procs = current;
+
+				if ((current = mproc_remove(&current)) == NULL) {
+					// if null, process iteration is done. do it again.
+					break;
+				}	
+				else {
+					continue;
+				}
+			}
+
+			current = current->forw;
+		}
+
+	}
+
+
+/*
 	if (!bg_pid && !fg_pid) return;
 
 	if (fg_pid)
@@ -62,6 +107,8 @@ void proc_exit() {
 				bg_pid = 0;
 			}
 		} while (pid == 0);		
+*/
+
 }
 
 void sig_handler(int sig) {
@@ -73,11 +120,10 @@ void sig_handler(int sig) {
 	}
 }
 
-#include "mproc.h" 
 
 int main(int argc, char *const argv[]) {
 	
-
+/*
 	struct mproc processes[5] = {
 		{ .pid = 1, .flag = 5, .argv = NULL, .forw = NULL, .back = NULL},
 		{ .pid = 2, .flag = 4, .argv = NULL, .forw = NULL, .back = NULL},
@@ -99,6 +145,11 @@ int main(int argc, char *const argv[]) {
 	}
 
 	return 0;
+*/
+
+
+
+
 
 	signal(SIGCHLD, proc_exit);
 
@@ -122,9 +173,10 @@ int main(int argc, char *const argv[]) {
 	
 		if (NEED_TO_SHOW_PROMPT(result)) {
 			show_prompt();
+			free_strs(cmd);
 		}
 
-		free_strs(cmd);
+	//	free_strs(cmd); // not free here.
 	}
 
 	return 0;
