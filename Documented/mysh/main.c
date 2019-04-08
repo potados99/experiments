@@ -15,6 +15,8 @@ int fg_pid = 0;
 
 int last = 0;
 
+int enable_input = 1;
+
 void proc_exit() {
 	int status;
 	int pid;
@@ -34,6 +36,9 @@ void proc_exit() {
 				last = WEXITSTATUS(status);
 
 				fg_pid = 0;
+
+				enable_input = 1;
+
 				show_prompt();
 			}
 		} while (pid == 0);
@@ -70,6 +75,8 @@ int main(int argc, char *const argv[]) {
 	show_prompt();
 
 	for (;;) {
+		if (!enable_input) continue;
+		
 		cmd = get_strings(stdin, 128, " \t\n"); /* get strings tokenized by space character, from stdin. */
 		result = launch(cmd);
 	

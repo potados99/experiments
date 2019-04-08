@@ -20,6 +20,7 @@
 extern int bg_pid;
 extern int fg_pid;
 extern int last;
+extern int enable_input;
 
 int launch(char **argv) {
 	if (argv == NULL) return -1;
@@ -41,7 +42,9 @@ int launch(char **argv) {
 		
 		return RET_BUILTIN;
 	}
-
+		
+	int null_fd;
+	
 	int pid = fork();
 	if (pid < 0) {
 		/* fork error. */
@@ -53,17 +56,17 @@ int launch(char **argv) {
 		
 		if (background) {
 			// kill background process output.
-			int null = open("/dev/null", O_WRONLY);
+			null_fd = open("/dev/null", O_WRONLY);
 
-			dup2(null, 1);
-			dup2(null, 2);
+			dup2(null_fd, 1);
+			dup2(null_fd, 2);
 
-			close(null);
+			close(null_fd);
 		}
 		
 		if (execvp(argv[0], argv) == -1) {
 			fprintf(stderr, "command not found.\n");
-
+			
 			free_strs(argv);
 			exit(99);
 		}
@@ -79,16 +82,16 @@ int launch(char **argv) {
 			return RET_BG;
 		}
 		else {
-			//printf("Y!\n");
 			fg_pid = pid;
-			
-			int null = open("/dev/null", O_RDONLY);
 
-			dup2(null, 3);
-			// dup2(null, 3);
-
-			close(null);
+			enable_input = 0;
+		/*
+			null_fd = open("/dev/null", O_RDONLY);
 			
+			dup2(null_fd, 0);
+		
+			close(null_fd);
+		*/
 			return RET_FG;
 		}
 			
