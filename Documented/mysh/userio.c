@@ -7,6 +7,8 @@
 
 #include "str.h"
 
+extern int last;
+
 static char ignore[] = {
 	'\n',
 	'\t'
@@ -24,8 +26,9 @@ void show_prompt() {
 	getlogin_r(username_buf, sizeof(username_buf));
 	gethostname(hostname_buf, sizeof(hostname_buf));
 	getcwd(cwd_buf, sizeof(cwd_buf));
-	
-	printf("<%s@%s> %s $ ", username_buf, hostname_buf, cwd_buf);
+
+
+	printf("<%s@%s> %s %s ", username_buf, hostname_buf, cwd_buf, last ? "$$":"$");
 	fflush(stdout);
 }
 
