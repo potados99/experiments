@@ -13,7 +13,7 @@
 
 struct mproc *procs = NULL;
 int last = 0;
-uint8_t ioflags = 0;
+int ioflags = 0;
 
 
 void proc_exit() {
