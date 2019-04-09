@@ -10,6 +10,7 @@ int main(int argc, const char * argv[]) {
 	int arg; /* optional */
 
 	if (argc < 2) {
+		puts("Too less arguments.\n");
 		goto Usage;
 	}
 	else if (to_int(argv[1], 10, &mode) != 0) {
@@ -20,31 +21,29 @@ int main(int argc, const char * argv[]) {
 		puts("Invalid mode.\n");
 		goto Usage;
 	}
+	else if (mode == 2 && argc < 3) {
+		puts("Argument for mode 2 is not given.\n");
+		goto Usage;
+	}
 	else if (mode == 2 && to_int(argv[2], 16, &arg) != 0) {
 		puts("Invalid character for mode option.\n");
 		goto Usage;
 	}
 
-	if (mode == 1) {
-		/* mode 1 things. */		
-		
-		for (int i = 0; i <= 0x0F; ++i) {
-			print_hex(i);
-			sleep(1);
-		}
-	}
-	else if (mode == 2) {
-		/* mode 2 things. */
-
-		print_digits(arg);
-	}
-	else {
-		/* NOREACH */
+	switch (mode) {
+		case 1:
+			fnd_print_range(0x00, 0x0F, 500);
+			break;
+		case 2:
+			fnd_control_segments(arg);
+			break;
+		default:
+			/* NOREACH */
+			break;
 	}
 
 	return 0;
   
-
 Usage:
 	puts("Usage: App mode [argument].");
 	puts("	Modes:");
