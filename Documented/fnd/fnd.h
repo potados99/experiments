@@ -41,7 +41,10 @@ void 				fnd_control_segments(int segment_bits);
 
 /**
   * Set a single segment to value.
+  * @param val		GPIO is set HIGH for non-zero val, LOW for zero val.
   */
 void				fnd_set_segment(int segment, int val);
+
+void				fnd_init_gpio();
 
 #endif /* fnd_h */

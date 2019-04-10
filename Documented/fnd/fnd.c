@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include <wiringpi.h>
+#include <wiringPi.h>
 
 /*
 val  binary	 	hex
@@ -23,6 +23,8 @@ val  binary	 	hex
  E	0111 1011	0x7B
  F	0111 0001	0x71
  */
+
+static int gpio_initialized = 0;
 
 /**
   * Segment index is fixed.
@@ -78,5 +80,23 @@ void fnd_control_segments(int segment_bits) {
 }
 
 void fnd_set_segment(int segment_index, int val) {
-	printf("Turn %s \tsegment %d \t(GPIO %d)\n", val ? "ON" : "OFF", segment_index, gpio_map[segment_index]);
+	if (segment_index < 0 || segment_index > FND_SEGMENTS - 1) 
+		return;
+	
+	if (gpio_initialized) {
+		digitalWrite(gpio_map[segment_index], val ? HIGH : LOW);
+	}
+	else {
+		puts("GPIO not initialized!");
+	}
+}
+
+void fnd_init_gpio() {
+	wiringPiSetup();
+
+	for (int i = 0; i < FND_SEGMENTS; ++i) {
+		pinMode(gpio_map[i], OUTPUT);
+	}
+
+	gpio_initialized = 1;
 }

@@ -30,6 +30,8 @@ int main(int argc, const char * argv[]) {
 		goto Usage;
 	}
 
+	fnd_init_gpio();
+
 	switch (mode) {
 		case 1:
 			fnd_print_range(0x00, 0x0F, 500);

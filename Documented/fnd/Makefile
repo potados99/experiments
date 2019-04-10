@@ -4,10 +4,10 @@ TARGET = App
 
 CC = gcc
 CFLAGS = -Wall
-LFLAGS = -lwiringpi
+LFLAGS = -lwiringPi
 
 ############ MODIFY ME ###########
-GPIO_PIN = 12 24 36 48 56 73 81
+GPIO_PIN = 12 13 14 15 16 17 18
 ##################################
 
 SEG_INDEX = $(shell seq 0 6)
