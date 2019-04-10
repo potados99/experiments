@@ -4,6 +4,7 @@ TARGET = App
 
 CC = gcc
 CFLAGS = -Wall
+LFLAGS = -lwiringpi
 
 ############ MODIFY ME ###########
 GPIO_PIN = 12 24 36 48 56 73 81
@@ -17,7 +18,7 @@ SOURCE = $(wildcard *.c)
 OBJECT = $(SOURCE:.c=.o)
 
 $(TARGET): $(OBJECT)
-	$(LINK.c) -o $@ $^
+	$(LINK.c) $(LFLAGS) -o $@ $^
 
 %.o: %.c
 	$(COMPILE.c) $(MACROS) $<

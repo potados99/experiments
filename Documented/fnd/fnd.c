@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <wiringpi.h>
 
 /*
 val  binary	 	hex
