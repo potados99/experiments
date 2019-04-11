@@ -3,7 +3,7 @@
 TARGET = App
 
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -std=c11
 LFLAGS = -lwiringPi
 
 
