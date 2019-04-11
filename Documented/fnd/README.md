@@ -11,3 +11,10 @@ Mode:
 Argument:
 	Hexadecimal representation of sum of bits refering to each segments.
 
+## Compile Options
+
+In Makefile, modify "VERBOSE" or "GPIO_PIN".
+
+When "VERBOSE" is set to more than zero, the number and/or the segments are printed.
+
+Number of "GPIO_PIN" MUST be same as the number of segments, which is 7.

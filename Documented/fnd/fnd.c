@@ -59,29 +59,55 @@ void fnd_print_range(int start, int end, int interval_msec) {
 }
 
 void fnd_print_hex(int val) {
-	if (val < HEX_DIGIT_MIN || val > HEX_DIGIT_MAX) 
+	if (val < HEX_DIGIT_MIN || val > HEX_DIGIT_MAX) {
+		fprintf(stderr, "HEX out of range: %x\n", val);
 		return;
+	}
+
+#if (VERBOSE > 0)
+	printf("Print: [%x] ", val);
+#endif
 
 	fnd_control_segments(digit_map[val]);
 }
 
 void fnd_control_segments(int segment_bits) {
-	if (segment_bits < ALL_SEGMENTS_OFF || segment_bits > ALL_SEGMENTS_ON) 
+	if (segment_bits < ALL_SEGMENTS_OFF || segment_bits > ALL_SEGMENTS_ON) {
+		fprintf(stderr, "More than 7 segments are not representable.\n");
 		return;
-
+	}
 	int pos = 0;
+	int bit = 0;
+
+#if (VERBOSE > 0)
+	printf("Segments: [");
+#endif
 
 	while (pos < FND_SEGMENTS) {
-		fnd_set_segment(pos, (segment_bits & 0x01));
+
+		bit = (segment_bits & 0x01);
+
+#if (VERBOSE > 0)
+		printf("%d%s", bit, (pos == FND_SEGMENTS - 1) ? "" : " ");
+#endif
+		
+		fnd_set_segment(pos, bit);
 
 		pos += 1;
 		segment_bits >>= 1;
 	}
+
+#if (VERBOSE > 0)
+	printf("]\n");
+#endif
+
 }
 
 void fnd_set_segment(int segment_index, int val) {
-	if (segment_index < 0 || segment_index > FND_SEGMENTS - 1) 
+	if (segment_index < 0 || segment_index > FND_SEGMENTS - 1) {
+		fprintf(stderr, "Segment index out of range: %d\n", segment_index);
 		return;
+	}
 	
 	if (gpio_initialized) {
 		digitalWrite(gpio_map[segment_index], val ? HIGH : LOW);
