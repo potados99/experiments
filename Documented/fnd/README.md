@@ -1,6 +1,9 @@
 # FND control
 
+FND control, by number or by digit bits.
+
 ## Usage
+
 ~~~
 App mode [argument]
 ~~~
@@ -10,6 +13,7 @@ Mode:
 
 Argument:
 	Hexadecimal representation of sum of bits refering to each segments.
+
 
 ## Compile Options
 
