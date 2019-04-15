@@ -111,7 +111,7 @@ void fnd_set_segment(int segment_index, int val) {
 	}
 	
 	if (gpio_initialized) {
-		digitalWrite(gpio_map[segment_index], val ? HIGH : LOW);
+		digitalWrite(gpio_map[segment_index], val ? LOW : HIGH); /* INVERTED. sink. */
 	}
 	else {
 		puts("GPIO not initialized!");
