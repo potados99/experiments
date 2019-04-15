@@ -11,7 +11,7 @@ LFLAGS = -lwiringPi
 # Odroid pin: 98 99 118 103 97 108 100
 GPIO_PIN = 27 26 11 6 24 23 22
 
-VVERBOSE = 1
+VERBOSE = 1
 #########################################
 
 
