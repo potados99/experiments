@@ -22,7 +22,7 @@ SOURCE = $(wildcard *.c)
 OBJECT = $(SOURCE:.c=.o)
 
 $(TARGET): $(OBJECT)
-	$(LINK.c) $(LFLAGS) -o $@ $^
+	$(LINK.c) -o $@ $^ $(LFLAGS) #source first, flags later.
 
 %.o: %.c
 	$(COMPILE.c) $(MACROS) $<
