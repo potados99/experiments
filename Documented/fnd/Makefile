@@ -4,7 +4,7 @@ TARGET = App
 
 CC = gcc
 CFLAGS = -Wall -std=c11
-LFLAGS = -lwiringPi
+LFLAGS = -lwiringPi -lwiringPiDev -lm -lpthread -lrt -lcrypt
 
 
 ############## MODIFY ME ################
