@@ -1,6 +1,7 @@
 #include "fnd.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <wiringPi.h>
 
@@ -54,7 +55,7 @@ void fnd_print_range(int start, int end, int interval_msec) {
 		fnd_print_hex(start);
 
 		if (start++ != end) 
-			usleep(interval_msec * 1000);
+			delay(interval_msec);
 	}
 }
 
