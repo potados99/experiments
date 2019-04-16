@@ -1,0 +1,5 @@
+#!/bin/sh
+
+read -p "Enter target name: " name
+
+sed -i "/TARGET\t\t:= /s/.*/TARGET\t\t:= $name/g" Makefile
