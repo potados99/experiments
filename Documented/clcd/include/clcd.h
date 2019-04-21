@@ -49,6 +49,11 @@ void lcd_put_cmd(unsigned char cmd);
 void lcd_put_char(char c);
 
 /**
+ * Write a line. NULL-terminate.
+ */
+void lcd_put_line(char *line);
+
+/**
  * Setup pins.
  */
 void lcd_init();

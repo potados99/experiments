@@ -2,9 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-int main(int argc, const char * argv[]) {
-	// insert code here...
-	printf("Hello, world!\n");
+#include "clcd.h"
+
+int main(int argc, char *const argv[]) {
+	lcd_init();
+	
+	for (int i = 1; i < argc; ++i) {
+		lcd_put_line(argv[i]);
+	}
 	
 	return 0;
 }

@@ -18,10 +18,20 @@ OBJ_EXT		:= o
 
 #################################################
 
+
+################### ARGUMENTS ###################
+
+VERBOSE = 1
+
+#################################################
+
+
+
 ## DO NOT EDIT BELOW ##
 
 SOURCES := $(shell find $(SRC_DIR) -type f -name *.$(SRC_EXT))
 OBJECTS := $(patsubst $(SRC_DIR)/%, $(OBJ_DIR)/%, $(SOURCES:.$(SRC_EXT)=.$(OBJ_EXT)))
+MACROS := -DVERBOSE=$(VERBOSE)
 
 all: directories $(TARGET)
 	@echo [$@]
@@ -45,4 +55,4 @@ $(TARGET): $(OBJECTS)
 # COMPILE
 $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT)
 	@echo [$@]
-	$(CC) $(CFLAGS) -c -o $@ $< -I$(INC_DIR)
+	$(CC) $(CFLAGS) -c -o $@ $< -I$(INC_DIR) $(MACROS)

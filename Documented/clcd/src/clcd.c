@@ -1,6 +1,8 @@
 #include "clcd.h"
 #include "pgpio.h"
 
+#include <string.h>
+
 int lcd_pins[] = {
 	LCD_D4,
 	LCD_D5,
@@ -9,7 +11,6 @@ int lcd_pins[] = {
 	LCD_RS,
 	LCD_EN
 };
-
 
 void _lcd_apply() {
 	dwrite(LCD_EN, 1);
@@ -45,7 +46,29 @@ void lcd_put_char(char c) {
 	_lcd_write_byte(c);
 }
 
-void lcd_setup() {
+void lcd_put_line(char *line) {
+	int len = strlen(line);
+	for (register int i = 0; i < len; ++i) {
+		lcd_put_char(line[i]);
+	}
+	lcd_put_cmd(0xC0); /* linebreak */
+}
+
+void lcd_init() {
 	gpio_setup();
-	pinv_mode(lcd_pins, sizeof(lcd_pins)/sizeof(int));
+
+	pinv_mode(lcd_pins, sizeof(lcd_pins)/sizeof(int), GPIO_OUT);
+	dwritev(lcd_pins, sizeof(lcd_pins)/sizeof(int), 0);
+
+	udelay(35000);
+
+	lcd_put_cmd(0x28);
+	lcd_put_cmd(0x28);
+	lcd_put_cmd(0x28);
+
+	lcd_put_cmd(0x0e);
+	lcd_put_cmd(0x02);
+	udelay(2000);
+	lcd_put_cmd(0x01);
+	udelay(2000);
 }

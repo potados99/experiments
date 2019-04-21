@@ -26,15 +26,26 @@ void pin_mode(int pin, int mode) {
 }
 
 void pinv_mode(int pinv[], int pinc, int mode) {
-	Assert(check_init());
+	ASSERT(check_init());
 
-	for (int i = 0; i < pinc; ++i) {
-		pinMode(pinv[i], mode);
+	for (register int i = 0; i < pinc; ++i) {
+		pin_mode(pinv[i], mode);
 	}
 }
 
 void dwrite(int pin, int value) {
+#if (VERBOSE > 0)
+	printf("Writing to pin: %d, with value: %d.\n", pin, value);
+#endif
 	digitalWrite(pin, value);
 }
 
+void dwritev(int pinv[], int pinc, int value) {
+	for (register int i = 0; i < pinc; ++i) {
+		dwrite(pinv[i], value);
+	}
+}
 
+void udelay(int usec) {
+	delayMicroseconds(usec);
+}
