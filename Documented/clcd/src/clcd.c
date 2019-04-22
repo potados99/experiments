@@ -14,9 +14,9 @@ int lcd_pins[] = {
 
 void _lcd_apply() {
 	dwrite(LCD_EN, 1);
-	delayMicroseconds(10);
+	udelay(100);
 	dwrite(LCD_EN, 0);
-	delayMicroseconds(10);
+	udelay(100);
 }
 
 void _lcd_write_nibble(unsigned char nibble) {
@@ -68,7 +68,10 @@ void lcd_init() {
 
 	lcd_put_cmd(0x0e);
 	lcd_put_cmd(0x02);
-	udelay(2000);
+	
+	udelay(3000);
+
 	lcd_put_cmd(0x01);
-	udelay(2000);
+	
+	udelay(3000);
 }
