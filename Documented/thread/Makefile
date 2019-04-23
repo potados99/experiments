@@ -6,7 +6,7 @@ SOURCE = $(wildcard *.c)
 OBJECT = $(SOURCE:.c=.o)
 
 $(TARGET): $(OBJECT)
-	$(CC) -o $@ $<
+	$(CC) -o $@ $< $(LFLAGS)
 
 %.o: %.c
 	$(CC) -c -o $@ $<
