@@ -78,5 +78,9 @@ void *thread_callback(void *arg) {
 		sleep(1);
 	}
 
+	/* 스레드 종료 */
+	pthread_exit(NULL);
+
+	/* NOREACH */
 	return NULL;
 }
