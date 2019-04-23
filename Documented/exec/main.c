@@ -37,13 +37,24 @@ int main(int argc, char *const argv[]) {
 		puts("Usage: runner command args...");
 		exit(0);
 	}
-		
-	execvp(*(argv + 1), argv + 1); 
-	/* 
-	   Start executable that has name of 'first argument'. 
-	   Arguments for that executable including its name is stored in an array, starting from 'argv + 1'. 
-	 */
 	
-	return 0;
 
+	int pid;
+	if ((pid = fork())) {
+		/**
+		 * parent. wait until child process done.
+		 */
+		wait(NULL) /* no state check. */;
+		printf("execution of %s is done.\n", argv[1]);
+	}
+
+	else {
+		/**
+		 * execution body.
+		 */
+		printf("execution of %s is going to be made.\n", argv[1]);
+		execvp(argv[1], argv + 1); 
+	}
+
+	return 0;
 }
