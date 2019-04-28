@@ -54,7 +54,7 @@ void keypad_setup(struct keypad *keypad, int rows[], int n_rows, int cols[], int
 /**
   * Set a callback launchec when input is available.
   */
-bool keypad_set_listener(struct keypad *keypad, keypad_listener listener);
+void keypad_set_listener(struct keypad *keypad, keypad_listener listener);
 
 /**
   * Read matrix and return the index of button pushed at that time.

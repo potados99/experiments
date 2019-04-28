@@ -7,8 +7,7 @@
 void keypad_setup(struct keypad *keypad, int rows[], int n_rows, int cols[], int n_cols) {
 	ASSERTDO((keypad != NULL), verbose_out(stderr, "keypad_setup: keypad is null.\n"); return);
 	ASSERTDO((rows != NULL), verbose_out(stderr, "keypad_setup: rows is null.\n"); return);
-	ASSERTDO((cols != NULL), verbose_out(stderr, "keypad_setup: cols is null.\n"); return);
-	
+	ASSERTDO((cols != NULL), verbose_out(stderr, "keypad_setup: cols is null.\n"); return);	
 
 	/* init */
 	keypad->initialized = false;
@@ -19,8 +18,7 @@ void keypad_setup(struct keypad *keypad, int rows[], int n_rows, int cols[], int
 	keypad->n_rows = 0;
 	keypad->n_cols = 0;
 	
-	callback = NULL;
-
+	keypad->callback = NULL;
 
 	/* assign */
 	keypad->n_rows = n_rows;
@@ -29,8 +27,8 @@ void keypad_setup(struct keypad *keypad, int rows[], int n_rows, int cols[], int
 	}
 
 	keypad->n_cols = n_cols;
-	for (int i = 0; i < keypad_n_cols; ++i) {
-		keypad->colss[i] = cols[i];
+	for (int i = 0; i < keypad->n_cols; ++i) {
+		keypad->cols[i] = cols[i];
 	}
 
 	gpio_setup();
@@ -47,7 +45,7 @@ void keypad_set_listener(struct keypad *keypad, keypad_listener listener) {
 }
 
 int keypad_read(struct keypad *keypad) {
-	ASSERTDO((keypad != NULL), verbose_out(stderr, "keypad_read: keypad is null.\n"); return);
+	ASSERTDO((keypad != NULL), verbose_out(stderr, "keypad_read: keypad is null.\n"); return -1);
 	
 	/* all rows LOW. */
 	pinv_mode(keypad->rows, keypad->n_rows, PGPIO_OUTPUT);
