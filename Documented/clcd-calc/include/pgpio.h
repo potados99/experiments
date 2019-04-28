@@ -54,7 +54,7 @@ static inline void pin_mode(int pin, int mode) {
 	if (mode == PGPIO_INPUT_PULLUP) {
 		pinMode(pin, PGPIO_INPUT);
 		pullUpDnControl(pin, PUD_UP);
-		verbose_out(stdout, "setting pin %d to input_pullup.\n");
+		verbose_out(stdout, "setting pin %d to input_pullup.\n", pin);
 	} else {
 		pinMode(pin, mode);
 		verbose_out(stdout, "setting pin %d to mode %d.\n", pin, mode);
