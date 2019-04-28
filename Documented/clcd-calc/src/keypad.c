@@ -110,7 +110,7 @@ bool keypad_loop(struct keypad *keypad) {
 
 	if (keypad->callback != NULL) {
 		int read = keypad_read(keypad);
-		
+		printf("read: %d\n", read);	
 		if (read != -1) {
 			if (!pressed) {
 				/* has something pushed just now. */
