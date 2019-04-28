@@ -51,13 +51,12 @@ int keypad_read(struct keypad *keypad) {
 	pinv_mode(keypad->rows, keypad->n_rows, PGPIO_OUTPUT);
 	digital_writev(keypad->rows, keypad->n_rows, PGPIO_LOW);
 	
-	pinv_mode(keypad->cols, keypad->n_cols, PGPIO_INPUT_PULLUP); /* set mode and read at once. */
-
 	int sel_col = -1;
 	int sel_row = -1;
 	
 	/* find column. */
 	for (int i = 0; i < keypad->n_cols; ++i) {
+		pinv_mode(keypad->cols[i], PGPIO_INPUT_PULLUP); /* set mode and read at once. */
 		
 		if (digital_read(keypad->cols[i]) == 0)	{
 			/* in pull-up mode, active zero. */
@@ -78,14 +77,15 @@ int keypad_read(struct keypad *keypad) {
 	pin_mode(keypad->cols[sel_col], PGPIO_OUTPUT);
 	digital_write(keypad->cols[sel_col], PGPIO_LOW);
 
-	pinv_mode(keypad->rows, keypad->n_rows, PGPIO_INPUT_PULLUP);
-
 	/* find row. */
 	for (int i = 0; i < keypad->n_rows; ++i) {
+		pin_mode(keypad->rows[i], PGPIO_INPUT_PULLUP);
 
 		if (digital_read(keypad->rows[i]) == 0) {
 			sel_row = i;
 			verbose_out(stdout, "keypad: selected row: %d.\n", i);
+			
+			break;
 		} 
 	}
 
@@ -94,6 +94,8 @@ int keypad_read(struct keypad *keypad) {
 		verbose_out(stderr, "WTF???\n");
 		return -1;
 	}
+
+	usleep(20);
 
 	return _point_to_index(sel_row, sel_col, keypad->n_cols);
 }
