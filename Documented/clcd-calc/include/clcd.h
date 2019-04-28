@@ -33,14 +33,14 @@ static inline void _clcd_apply(int en_pin) {
  * Select command register.
  */
 static inline void _clcd_select_cmd(int reg_pin) {
-	digital_write(reg_pin, LCD_R_CMD);
+	digital_write(reg_pin, CLCD_R_CMD);
 }
 
 /**
   * Select data register.
   */
 static inline void _clcd_select_data(int reg_pin) {
-	digital_write(reg_pin, LCD_R_DATA);
+	digital_write(reg_pin, CLCD_R_DATA);
 }
 
 /**
@@ -59,8 +59,8 @@ static inline void _clcd_write_nibble(struct clcd* clcd, unsigned char nibble) {
  * Write to (D4..D7) twice, 4 bits at once.
  */
 static inline void _clcd_write_byte(struct clcd* clcd, unsigned char byte) {
-	_clcd_write_nibble((byte >> 4) & 0x0f); /* high 4 */
-	_clcd_write_nibble(byte & 0x0f); /* low 4 */
+	_clcd_write_nibble(clcd, (byte >> 4) & 0x0f); /* high 4 */
+	_clcd_write_nibble(clcd, byte & 0x0f); /* low 4 */
 }
 
 

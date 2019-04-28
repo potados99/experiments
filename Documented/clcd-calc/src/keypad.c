@@ -54,7 +54,7 @@ void keypad_set_listener(struct keypad *keypad, keypad_listener listener) {
 }
 
 int keypad_read(struct keypad *keypad) {
-	ASSERTDO((keypad != NULL), print_error(stderr, "keypad_read: keypad is null.\n"); return -1);
+	ASSERTDO((keypad != NULL), print_error("keypad_read: keypad is null.\n"); return -1);
 	
 	/* all rows LOW. */
 	pinv_mode(keypad->rows, keypad->n_rows, PGPIO_OUTPUT);
