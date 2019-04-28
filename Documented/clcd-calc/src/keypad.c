@@ -116,6 +116,8 @@ bool keypad_loop(struct keypad *keypad) {
 				/* has something pushed just now. */
 				keypad->callback((enum KEY)read);
 				pressed = true;
+			} else {
+				printf("nothin to do!\n");
 			}
 		} else {
 			pressed = false;
