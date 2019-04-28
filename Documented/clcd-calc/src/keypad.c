@@ -108,17 +108,25 @@ bool pressed = false;
 bool keypad_loop(struct keypad *keypad) {
 	ASSERTDO((keypad != NULL), verbose_out(stderr, "keypad_loop: keypad is null.\n"); return false);
 
+	static long count = 0;
+
 	if (keypad->callback != NULL) {
+		printf("loop count: %ld\n", count++);
+		
 		int read = keypad_read(keypad);
+		
 		printf("read: %d\n", read);	
+		
 		if (read != -1) {
 			if (!pressed) {
 				/* has something pushed just now. */
 				keypad->callback((enum KEY)read);
+		
 				pressed = true;
 			} else {
 				printf("nothin to do!\n");
 			}
+		
 		} else {
 			pressed = false;
 		}
