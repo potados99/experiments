@@ -124,5 +124,7 @@ bool keypad_loop(struct keypad *keypad) {
 		}
 	}
 
+	udelay(1000000);
+
 	return true;
 }
