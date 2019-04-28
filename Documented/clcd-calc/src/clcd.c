@@ -13,15 +13,15 @@ int lcd_pins[] = {
 };
 
 void _lcd_apply() {
-	dwrite(LCD_EN, 1);
+	digital_write(LCD_EN, 1);
 	udelay(100);
-	dwrite(LCD_EN, 0);
+	digital_write(LCD_EN, 0);
 	udelay(100);
 }
 
 void _lcd_write_nibble(unsigned char nibble) {
 	for (register int i = 0; i < 4; ++i) {
-		dwrite(lcd_pins[i], nibble & 0x01);
+		digital_write(lcd_pins[i], nibble & 0x01);
 		nibble >>= 1;
 	}
 	_lcd_apply();
@@ -33,7 +33,7 @@ void _lcd_write_byte(unsigned char byte) {
 }
 
 void _lcd_select_register(int r) {
-	dwrite(LCD_RS, r);
+	digital_write(LCD_RS, r);
 }
 
 void lcd_put_cmd(unsigned char cmd) {
@@ -48,17 +48,19 @@ void lcd_put_char(char c) {
 
 void lcd_put_line(char *line) {
 	int len = strlen(line);
+	
 	for (register int i = 0; i < len; ++i) {
 		lcd_put_char(line[i]);
 	}
+
 	lcd_put_cmd(0xC0); /* linebreak */
 }
 
 void lcd_init() {
 	gpio_setup();
 
-	pinv_mode(lcd_pins, sizeof(lcd_pins)/sizeof(int), GPIO_OUT);
-	dwritev(lcd_pins, sizeof(lcd_pins)/sizeof(int), 0);
+	pinv_mode(lcd_pins, sizeof(lcd_pins)/sizeof(int), PGPIO_OUTPUT);
+	digital_writev(lcd_pins, sizeof(lcd_pins)/sizeof(int), 0);
 
 	udelay(35000);
 
