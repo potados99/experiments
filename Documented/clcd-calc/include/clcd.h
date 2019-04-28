@@ -38,6 +38,10 @@ void _lcd_write_byte(unsigned char byte);
  */
 void _lcd_select_register(int r);
 
+
+
+
+
 /**
  * Send a command to the CLCD.
  */

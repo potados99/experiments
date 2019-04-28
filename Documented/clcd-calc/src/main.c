@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "clcd.h"
+#include "keypad.h"
 
 int main(int argc, char *const argv[]) {
 	lcd_init();

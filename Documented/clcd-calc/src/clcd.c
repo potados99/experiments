@@ -36,6 +36,10 @@ void _lcd_select_register(int r) {
 	digital_write(LCD_RS, r);
 }
 
+
+
+
+
 void lcd_put_cmd(unsigned char cmd) {
 	_lcd_select_register(LCD_R_CMD);
 	_lcd_write_byte(cmd);

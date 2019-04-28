@@ -1,6 +1,9 @@
 #ifndef _VERBOSE_H
 #define _VERBOSE_H
 
+#include <stdio.h>
+#include <stdarg.h>
+
 static inline void verbose_out(FILE *stream, const char *fmt, ...) {
 #if (VERBOSE > 0)
 	va_list arg_ptr;

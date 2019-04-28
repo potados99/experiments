@@ -7,7 +7,6 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdarg.h>
 #include <wiringPi.h>
 
 #include "pgpio.h"
@@ -17,6 +16,9 @@
 #define PGPIO_INPUT INPUT
 #define PGPIO_OUTPUT OUTPUT
 #define PGPIO_INPUT_PULLUP 0x99
+
+#define PGPIO_LOW LOW
+#define PGPIO_HIGH HIGH
 
 static bool initialized; 
 
@@ -87,6 +89,13 @@ static inline void digital_writev(int pinv[], int pinc, int value) {
 	for (register int i = 0; i < pinc; ++i) {
 		digital_write(pinv[i], value);
 	}
+}
+
+/*
+ * Digital read a pin.
+ */
+static inline int digital_read(int pin) {
+	return digitalRead(pin);
 }
 
 /**
