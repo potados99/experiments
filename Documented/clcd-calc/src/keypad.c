@@ -56,7 +56,7 @@ int keypad_read(struct keypad *keypad) {
 	
 	/* find column. */
 	for (int i = 0; i < keypad->n_cols; ++i) {
-		pinv_mode(keypad->cols[i], PGPIO_INPUT_PULLUP); /* set mode and read at once. */
+		pin_mode(keypad->cols[i], PGPIO_INPUT_PULLUP); /* set mode and read at once. */
 		
 		if (digital_read(keypad->cols[i]) == 0)	{
 			/* in pull-up mode, active zero. */
