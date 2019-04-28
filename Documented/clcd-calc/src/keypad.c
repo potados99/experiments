@@ -102,11 +102,11 @@ int keypad_read(struct keypad *keypad) {
 
 	return _point_to_index(sel_row, sel_col, keypad->n_cols);
 }
+	
+bool pressed = false;
 
 bool keypad_loop(struct keypad *keypad) {
 	ASSERTDO((keypad != NULL), verbose_out(stderr, "keypad_loop: keypad is null.\n"); return false);
-
-	static bool pressed = false;
 
 	if (keypad->callback != NULL) {
 		int read = keypad_read(keypad);
