@@ -54,16 +54,16 @@ void clcd_init(struct clcd* clcd) {
 	  */
 	udelay(35000);
 
-	clcd_put_cmd(0x28);
-	clcd_put_cmd(0x28);
-	clcd_put_cmd(0x28);
+	clcd_put_cmd(clcd, 0x28);
+	clcd_put_cmd(clcd, 0x28);
+	clcd_put_cmd(clcd, 0x28);
 
-	clcd_put_cmd(0x0e);
-	clcd_put_cmd(0x02);
+	clcd_put_cmd(clcd, 0x0e);
+	clcd_put_cmd(clcd, 0x02);
 	
 	udelay(3000);
 
-	clcd_put_cmd(0x01);
+	clcd_put_cmd(clcd, 0x01);
 	
 	udelay(3000);
 }
@@ -89,6 +89,6 @@ void clcd_put_line(struct clcd *clcd, char *line) {
 		}
 	}
 
-	lcd_put_cmd(0xC0); /* linebreak */
+	clcd_put_cmd(clcd, 0xC0); /* linebreak */
 }
 
