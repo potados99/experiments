@@ -1,6 +1,11 @@
 #ifndef _CLCD_H
 #define _CLCD_H
 
+/**
+  * Todo: learn CLCD commands and define them as a macro.
+  * 2019.04.29
+  */
+
 #include <stdbool.h>
 
 #include "pgpio.h"
