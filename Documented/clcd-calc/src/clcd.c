@@ -7,10 +7,10 @@
 void clcd_setup(struct clcd* clcd, int data_pins[], int reg_pin, int en_pin) {
 	ASSERTDO((clcd != NULL), print_error("clcd_setup: clcd is null.\n"); return);
 	ASSERTDO((data_pins != NULL), print_error("clcd_setup: data_pins is null.\n"); return);
-	ASSERTDO((reg_pin > 0), print_error("clcd_setup: reg_pin cannot be under zero.\n"); return);
-	ASSERTDO((en_pin > 0), print_error("clcd_setup: en_pin cannot be under zero.\n"); return);
+	ASSERTDO((reg_pin >= 0), print_error("clcd_setup: reg_pin cannot be under zero.\n"); return);
+	ASSERTDO((en_pin >= 0), print_error("clcd_setup: en_pin cannot be under zero.\n"); return);
 	for (int i = 0; i < CLCD_DATA_PINS; ++i) {
-		ASSERTDO((data_pins[i] > 0), print_error("clcd_setup: data_pins[%d] cannot be under zero.\n", i); return);
+		ASSERTDO((data_pins[i] >= 0), print_error("clcd_setup: data_pins[%d] cannot be under zero.\n", i); return);
 	}
 
 	/**

@@ -9,13 +9,13 @@ void keypad_setup(struct keypad *keypad, int rows[], int n_rows, int cols[], int
 	ASSERTDO((keypad != NULL), print_error("keypad_setup: keypad is null.\n"); return);
 	ASSERTDO((rows != NULL), print_error("keypad_setup: rows is null.\n"); return);
 	ASSERTDO((cols != NULL), print_error("keypad_setup: cols is null.\n"); return);	
-	ASSERTDO((n_rows > 0), print_error("keypad_setup: n_rows cannot be under zero.\n"); return);
-	ASSERTDO((n_cols > 0), print_error("keypad_setup: n_cols cannot be under zero.\n"); return);
+	ASSERTDO((n_rows >= 0), print_error("keypad_setup: n_rows cannot be under zero.\n"); return);
+	ASSERTDO((n_cols >= 0), print_error("keypad_setup: n_cols cannot be under zero.\n"); return);
 	for (int i = 0; i < n_rows; ++i) {
-		ASSERTDO((rows[i] > 0), print_error("keypad_setup: rows[%d] cannot be under zero.\n", i); return);
+		ASSERTDO((rows[i] >= 0), print_error("keypad_setup: rows[%d] cannot be under zero.\n", i); return);
 	}
 	for (int i = 0; i < n_cols; ++i) {
-		ASSERTDO((cols[i] > 0), print_error("keypad_setup: cols[%d] cannot be under zero.\n", i); return);
+		ASSERTDO((cols[i] >= 0), print_error("keypad_setup: cols[%d] cannot be under zero.\n", i); return);
 	}
 
 	/* initialize */
