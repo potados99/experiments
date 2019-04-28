@@ -106,10 +106,16 @@ int keypad_read(struct keypad *keypad) {
 bool keypad_loop(struct keypad *keypad) {
 	ASSERTDO((keypad != NULL), verbose_out(stderr, "keypad_loop: keypad is null.\n"); return false);
 
+	static bool pressed = false;
+
 	if (keypad->callback != NULL) {
 		int read = keypad_read(keypad);
-		if (read != -1) {
+		if (read != -1 && !pressed) {
+			/* has something pushed just now. */
 			keypad->callback((enum KEY)read);
+			pressed = true;
+		} else {
+			pressed = false;
 		}
 	}
 
