@@ -4,81 +4,91 @@
 
 #include <string.h>
 
-int lcd_pins[] = {
-	LCD_D4,
-	LCD_D5,
-	LCD_D6,
-	LCD_D7,
-	LCD_RS,
-	LCD_EN
-};
-
-void _lcd_apply() {
-	digital_write(LCD_EN, 1);
-	udelay(100);
-	digital_write(LCD_EN, 0);
-	udelay(100);
-}
-
-void _lcd_write_nibble(unsigned char nibble) {
-	for (register int i = 0; i < 4; ++i) {
-		digital_write(lcd_pins[i], nibble & 0x01);
-		nibble >>= 1;
+void clcd_setup(struct clcd* clcd, int data_pins[], int reg_pin, int en_pin) {
+	ASSERTDO((clcd != NULL), print_error("clcd_setup: clcd is null.\n"); return);
+	ASSERTDO((data_pins != NULL), print_error("clcd_setup: data_pins is null.\n"); return);
+	ASSERTDO((reg_pin > 0), print_error("clcd_setup: reg_pin cannot be under zero.\n"); return);
+	ASSERTDO((en_pin > 0), print_error("clcd_setup: en_pin cannot be under zero.\n"); return);
+	for (int i = 0; i < CLCD_DATA_PINS; ++i) {
+		ASSERTDO((data_pins[i] > 0), print_error("clcd_setup: data_pins[%d] cannot be under zero.\n", i); return);
 	}
-	_lcd_apply();
+
+	/**
+	  * initialize.
+	  */
+	clcd->initialized = false;
+	memset(clcd->data_pins, 0, sizeof(int) * CLCD_DATA_PINS);
+	clcd->reg_pin = 0;
+	clcd->en_pin = 0;
+
+	/**
+	  * assign.
+	  */
+	for (int i = 0; i < CLCD_DATA_PINS; ++i) {
+		clcd->data_pins[i] = data_pins[i];
+	}
+
+	clcd->reg_pin = reg_pin;
+	clcd->en_pin = en_pin;
+
+	clcd->initialized = true;
 }
 
-void _lcd_write_byte(unsigned char byte) {
-	_lcd_write_nibble((byte >> 4) & 0x0f); /* high 4 */
-	_lcd_write_nibble(byte & 0x0f); /* low 4 */
+void clcd_init(struct clcd* clcd) {
+	/**
+	  * basic gpio pin setup.
+	  */
+	gpio_setup();
+
+	pinv_mode(clcd->data_pins, CLCD_DATA_PINS, PGPIO_OUTPUT);
+	pin_mode(clcd->reg_pin, PGPIO_OUTPUT);
+	pin_mode(clcd->en_pin, PGPIO_OUTPUT);
+
+	digital_writev(clcd->data_pins, CLCD_DATA_PINS, PGPIO_LOW);
+	digital_write(clcd->reg_pin, PGPIO_LOW);
+	digital_write(clcd->en_pin, PGPIO_LOW);
+
+
+	/**
+	  * wait and apply commands.
+	  */
+	udelay(35000);
+
+	clcd_put_cmd(0x28);
+	clcd_put_cmd(0x28);
+	clcd_put_cmd(0x28);
+
+	clcd_put_cmd(0x0e);
+	clcd_put_cmd(0x02);
+	
+	udelay(3000);
+
+	clcd_put_cmd(0x01);
+	
+	udelay(3000);
 }
 
-void _lcd_select_register(int r) {
-	digital_write(LCD_RS, r);
+void clcd_put_cmd(struct clcd *clcd, unsigned char cmd) {
+	_clcd_select_cmd(clcd->reg_pin);
+	_clcd_write_byte(clcd, cmd);
 }
 
-
-
-
-
-void lcd_put_cmd(unsigned char cmd) {
-	_lcd_select_register(LCD_R_CMD);
-	_lcd_write_byte(cmd);
+void clcd_put_char(struct clcd *clcd, char c) {
+	_clcd_select_data(clcd->reg_pin);
+	_clcd_write_byte(clcd, c);
 }
 
-void lcd_put_char(char c) {
-	_lcd_select_register(LCD_R_DATA);
-	_lcd_write_byte(c);
-}
-
-void lcd_put_line(char *line) {
+void clcd_put_line(struct clcd *clcd, char *line) {
 	int len = strlen(line);
 	
 	for (register int i = 0; i < len; ++i) {
-		lcd_put_char(line[i]);
+		if (line[i] == '\n') {
+			clcd_put_cmd(clcd, 0xc0);
+		} else {
+			clcd_put_char(clcd, line[i]);
+		}
 	}
 
 	lcd_put_cmd(0xC0); /* linebreak */
 }
 
-void lcd_init() {
-	gpio_setup();
-
-	pinv_mode(lcd_pins, sizeof(lcd_pins)/sizeof(int), PGPIO_OUTPUT);
-	digital_writev(lcd_pins, sizeof(lcd_pins)/sizeof(int), 0);
-
-	udelay(35000);
-
-	lcd_put_cmd(0x28);
-	lcd_put_cmd(0x28);
-	lcd_put_cmd(0x28);
-
-	lcd_put_cmd(0x0e);
-	lcd_put_cmd(0x02);
-	
-	udelay(3000);
-
-	lcd_put_cmd(0x01);
-	
-	udelay(3000);
-}

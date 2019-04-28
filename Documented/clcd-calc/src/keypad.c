@@ -6,11 +6,19 @@
 #include <string.h>
 
 void keypad_setup(struct keypad *keypad, int rows[], int n_rows, int cols[], int n_cols) {
-	ASSERTDO((keypad != NULL), verbose_out(stderr, "keypad_setup: keypad is null.\n"); return);
-	ASSERTDO((rows != NULL), verbose_out(stderr, "keypad_setup: rows is null.\n"); return);
-	ASSERTDO((cols != NULL), verbose_out(stderr, "keypad_setup: cols is null.\n"); return);	
+	ASSERTDO((keypad != NULL), print_error("keypad_setup: keypad is null.\n"); return);
+	ASSERTDO((rows != NULL), print_error("keypad_setup: rows is null.\n"); return);
+	ASSERTDO((cols != NULL), print_error("keypad_setup: cols is null.\n"); return);	
+	ASSERTDO((n_rows > 0), print_error("keypad_setup: n_rows cannot be under zero.\n"); return);
+	ASSERTDO((n_cols > 0), print_error("keypad_setup: n_cols cannot be under zero.\n"); return);
+	for (int i = 0; i < n_rows; ++i) {
+		ASSERTDO((rows[i] > 0), print_error("keypad_setup: rows[%d] cannot be under zero.\n", i); return);
+	}
+	for (int i = 0; i < n_cols; ++i) {
+		ASSERTDO((cols[i] > 0), print_error("keypad_setup: cols[%d] cannot be under zero.\n", i); return);
+	}
 
-	/* init */
+	/* initialize */
 	keypad->initialized = false;
 
 	memset(keypad->rows, 0, sizeof(int) * MAX_ROWS);
@@ -38,7 +46,7 @@ void keypad_setup(struct keypad *keypad, int rows[], int n_rows, int cols[], int
 }
 
 void keypad_set_listener(struct keypad *keypad, keypad_listener listener) {
-	ASSERTDO((keypad != NULL), verbose_out(stderr, "keypad_set_listener: keypad is null.\n"); return);
+	ASSERTDO((keypad != NULL), print_error("keypad_set_listener: keypad is null.\n"); return);
 	
 	if (listener != NULL) {
 		keypad->callback = listener;
@@ -46,7 +54,7 @@ void keypad_set_listener(struct keypad *keypad, keypad_listener listener) {
 }
 
 int keypad_read(struct keypad *keypad) {
-	ASSERTDO((keypad != NULL), verbose_out(stderr, "keypad_read: keypad is null.\n"); return -1);
+	ASSERTDO((keypad != NULL), print_error(stderr, "keypad_read: keypad is null.\n"); return -1);
 	
 	/* all rows LOW. */
 	pinv_mode(keypad->rows, keypad->n_rows, PGPIO_OUTPUT);
@@ -62,7 +70,7 @@ int keypad_read(struct keypad *keypad) {
 		if (digital_read(keypad->cols[i]) == 0)	{
 			/* in pull-up mode, active zero. */
 			sel_col = i;
-			verbose_out(stdout, "keypad: selected column: %d.\n", i);
+			print_trace("keypad: selected column: %d.\n", i);
 
 			break;
 		}
@@ -86,7 +94,7 @@ int keypad_read(struct keypad *keypad) {
 
 		if (digital_read(keypad->rows[i]) == 0) {
 			sel_row = i;
-			verbose_out(stdout, "keypad: selected row: %d.\n", i);
+			print_trace("keypad: selected row: %d.\n", i);
 			
 			break;
 		} 
@@ -96,7 +104,8 @@ int keypad_read(struct keypad *keypad) {
 
 	if (sel_row == -1) {
 		/* Hmm.. can this happen? */
-		verbose_out(stderr, "WTF???\n");
+		print_info("FASTER THAN ME?\n");
+		
 		return -1;
 	}
 
@@ -105,7 +114,7 @@ int keypad_read(struct keypad *keypad) {
 	
 
 bool keypad_loop(struct keypad *keypad) {
-	ASSERTDO((keypad != NULL), verbose_out(stderr, "keypad_loop: keypad is null.\n"); return false);
+	ASSERTDO((keypad != NULL), print_error("keypad_loop: keypad is null.\n"); return false);
 
 	static bool pressed = false;
 

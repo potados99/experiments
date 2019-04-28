@@ -23,11 +23,11 @@
 /**
   * CLCD connection.
   */
-#define LCD_D4		2
-#define LCD_D5		3
-#define LCD_D6		1
-#define LCD_D7		4
-#define LCD_RS 		7
-#define LCD_EN 		0
+#define CLCD_D4		2
+#define CLCD_D5		3
+#define CLCD_D6		1
+#define CLCD_D7		4
+#define CLCD_RS 	7
+#define CLCD_EN 	0
 
 #endif /* _MACHINE_SPECIFIC_H */
