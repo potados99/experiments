@@ -6,7 +6,7 @@ static inline void verbose_out(FILE *stream, const char *fmt, ...) {
 	va_list arg_ptr;
 
 	va_start(arg_ptr, fmt);
-	vfprintf(stream, fmt, vlist);
+	vfprintf(stream, fmt, arg_ptr);
 	va_end(arg_ptr);
 #endif
 }
