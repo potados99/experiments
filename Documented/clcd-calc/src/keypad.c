@@ -1,6 +1,7 @@
 #include "keypad.h"
 #include "verbose.h"
 #include "pgpio.h"
+#include "machine_specific.h"
 
 #include <string.h>
 
@@ -66,7 +67,7 @@ int keypad_read(struct keypad *keypad) {
 			break;
 		}
 
-		udelay(1000); /* to save cpu. */
+		udelay(KEYPAD_SCAN_DELAY); /* to save cpu. */
 	}
 	
 	if (sel_col == -1) {
@@ -90,7 +91,7 @@ int keypad_read(struct keypad *keypad) {
 			break;
 		} 
 
-		udelay(1000); /* to save cpu. */
+		udelay(KEYPAD_SCAN_DELAY); /* to save cpu. */
 	}
 
 	if (sel_row == -1) {
