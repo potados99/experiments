@@ -65,6 +65,8 @@ int keypad_read(struct keypad *keypad) {
 
 			break;
 		}
+
+		udelay(1000); /* to save cpu. */
 	}
 	
 	if (sel_col == -1) {
@@ -87,6 +89,8 @@ int keypad_read(struct keypad *keypad) {
 			
 			break;
 		} 
+
+		udelay(1000); /* to save cpu. */
 	}
 
 	if (sel_row == -1) {
