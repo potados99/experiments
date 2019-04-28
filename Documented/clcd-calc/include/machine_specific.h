@@ -1,6 +1,8 @@
 #ifndef _MACHINE_SPECIFIC_H
 #define _MACHINE_SPECIFIC_H
 
+// yeah... 
+
 /**
   * Keypad connection to wiringPi.
   */
