@@ -1,17 +1,7 @@
 #ifndef _CLCD_H
 #define _CLCD_H
 
-/**
- * Hardwired.
- */
-#define LCD_D4 		2
-#define LCD_D5		3
-#define LCD_D6 		1
-#define LCD_D7 		4
-#define LCD_RS 		7
-#define LCD_EN 		0
-
-#define LCD_R_CMD 	0
+#define LCD_R_CMD	0
 #define LCD_R_DATA 	1
 
 extern int lcd_pins[];

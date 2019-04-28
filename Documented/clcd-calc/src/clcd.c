@@ -1,5 +1,6 @@
 #include "clcd.h"
 #include "pgpio.h"
+#include "machine_specific.h"
 
 #include <string.h>
 
