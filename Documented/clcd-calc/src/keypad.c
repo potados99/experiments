@@ -110,10 +110,13 @@ bool keypad_loop(struct keypad *keypad) {
 
 	if (keypad->callback != NULL) {
 		int read = keypad_read(keypad);
-		if (read != -1 && !pressed) {
-			/* has something pushed just now. */
-			keypad->callback((enum KEY)read);
-			pressed = true;
+		
+		if (read != -1) {
+			if (!pressed) {
+				/* has something pushed just now. */
+				keypad->callback((enum KEY)read);
+				pressed = true;
+			}
 		} else {
 			pressed = false;
 		}
