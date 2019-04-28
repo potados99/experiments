@@ -99,8 +99,6 @@ int keypad_read(struct keypad *keypad) {
 		return -1;
 	}
 
-	usleep(20);
-
 	return _point_to_index(sel_row, sel_col, keypad->n_cols);
 }
 
