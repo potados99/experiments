@@ -104,7 +104,7 @@ int keypad_read(struct keypad *keypad) {
 
 	if (sel_row == -1) {
 		/* Hmm.. can this happen? */
-		print_info("FASTER THAN ME?\n");
+		print_trace("FASTER THAN ME?\n");
 		
 		return -1;
 	}
@@ -126,7 +126,7 @@ bool keypad_loop(struct keypad *keypad) {
 
 			if (!pressed) {
 				/* has something pushed just now. */
-				keypad->callback((enum KEY)read);
+				keypad->callback(read);
 		
 				pressed = true;
 			} else {

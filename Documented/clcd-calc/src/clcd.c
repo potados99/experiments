@@ -3,6 +3,7 @@
 #include "machine_specific.h"
 
 #include <string.h>
+#include <stdio.h>
 
 void clcd_setup(struct clcd* clcd, int data_pins[], int reg_pin, int en_pin) {
 	ASSERTDO((clcd != NULL), print_error("clcd_setup: clcd is null.\n"); return);
@@ -50,7 +51,7 @@ void clcd_init(struct clcd* clcd) {
 	digital_write(clcd->en_pin, PGPIO_LOW);
 
 	clcd->initialized = true;
-	
+
 	/**
 	  * wait and apply commands.
 	  */
@@ -87,11 +88,18 @@ void clcd_put_char(struct clcd *clcd, char c) {
 	_clcd_select_data(clcd->reg_pin);
 	_clcd_write_byte(clcd, c);
 
+	print_info("wrote %c to clcd.\b\n", c);
+
 	clcd->cur_pos += 1;
-	if ((clcd->cur_pos % CLCD_CHARS) == (CLCD_CHAR - 1)) {
+	
+	if ((clcd->cur_pos % CLCD_CHARS) == 0) {
 		/* at the end of the line. */
-		clcd_set_cursor(clcd, clcd->cur_pos + 1);
+		print_info("it was the line end.\n");
+
+		clcd_set_cursor(clcd, clcd->cur_pos);
 	}
+
+	print_info("cursor now at %d.\n", clcd->cur_pos);
 }
 void clcd_put_line(struct clcd *clcd, char *line) {
 	ASSERTDO((clcd != NULL), print_error("clcd_put_line: clcd is null.\n"); return);
@@ -109,14 +117,30 @@ void clcd_put_line(struct clcd *clcd, char *line) {
 	}
 }
 
-void clcd_set_cursor(struct clcd* clcd, int pos) {
+void clcd_set_cursor(struct clcd *clcd, int pos) {
 	ASSERTDO((clcd != NULL), print_error("clcd_set_cursor: clcd is null.\n"); return);
 	ASSERTDO((clcd->initialized), print_error("clcd_set_cursor: clcd is not initialized.\n"); return);
-	ASSERTDO((pos > 0), print_error("clcd_set_cursor: pos cannot be under zero.\n"); return);
+	ASSERTDO((pos >= 0), print_error("clcd_set_cursor: pos cannot be under zero.\n"); return);
 	ASSERTDO((pos < 32), print_error("clcd_set_cursor: pos cannot reach or exceed 32.\n"); return);
 
-	clcd_put_cmd(clcd, C_DDRAM_ADD | ( (pos > 15) ? (pos + (0x40 - 0x0F)) : pos));
+	int line = pos / CLCD_CHARS;
+	int col = pos % CLCD_CHARS;
+
+	int actual_address = line * 0x40 + col;
+
+	print_info("going to set cursor to posision %d, of which address is %d.\n", pos, actual_address);
+
+	clcd_put_cmd(clcd, C_DDRAM_ADD | actual_address);
+	clcd_put_cmd(clcd, C_DDRAM_ADD | actual_address);
+	
 	clcd->cur_pos = pos;
+}
+
+void clcd_move_cursor(struct clcd *clcd, int delta) {
+	ASSERTDO((clcd != NULL), print_error("clcd_set_cursor: clcd is null.\n"); return);
+	ASSERTDO((clcd->initialized), print_error("clcd_set_cursor: clcd is not initialized.\n"); return);
+	
+	clcd_set_cursor(clcd, clcd->cur_pos + delta);
 }
 
 void clcd_clear(struct clcd* clcd) {

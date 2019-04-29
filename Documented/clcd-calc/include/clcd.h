@@ -1,14 +1,14 @@
 #ifndef _CLCD_H
 #define _CLCD_H
 
-#include <stdbool.h>
-
 #include "pgpio.h"
 #include "machine_specific.h"
 #include "macros.h"
 
-#define CLCD_R_CMD	0 		/* register selection for command mode. */
-#define CLCD_R_DATA 	1 		/* register selection for data mode. */
+#include <stdbool.h>
+
+#define CLCD_R_CMD	PGPIO_LOW 		/* register selection for command mode. */
+#define CLCD_R_DATA 	PGPIO_HIGH		/* register selection for data mode. */
 
 #define CLCD_DATA_PINS	4 		/* number of data pins in this configuration. (hardwired) */
 
@@ -67,9 +67,9 @@ struct clcd {
  */
 static inline void _clcd_apply(int en_pin) {
 	digital_write(en_pin, PGPIO_HIGH);
-	udelay(100);
+	udelay(500);
 	digital_write(en_pin, PGPIO_LOW);
-	udelay(100);
+	udelay(500);
 }
 
 /**
@@ -77,6 +77,7 @@ static inline void _clcd_apply(int en_pin) {
  */
 static inline void _clcd_select_cmd(int reg_pin) {
 	digital_write(reg_pin, CLCD_R_CMD);
+	udelay(1000);
 }
 
 /**
@@ -84,6 +85,7 @@ static inline void _clcd_select_cmd(int reg_pin) {
   */
 static inline void _clcd_select_data(int reg_pin) {
 	digital_write(reg_pin, CLCD_R_DATA);
+	udelay(1000);
 }
 
 /**
@@ -94,6 +96,7 @@ static inline void _clcd_write_nibble(struct clcd* clcd, unsigned char nibble) {
 		digital_write(clcd->data_pins[i], nibble & 0x01);
 		nibble >>= 1;
 	}
+	
 	_clcd_apply(clcd->en_pin);
 }
 
@@ -135,7 +138,12 @@ void clcd_put_line(struct clcd* clcd, char *line);
 /**
   * Set cursor position. (DDRAM address)
   */
-void clcd_set_cursor(struct clcd* clcd, int pos);
+void clcd_set_cursor(struct clcd *clcd, int pos);
+
+/**
+  * Move cursor position
+  */
+void clcd_move_cursor(struct clcd *clcd, int delta);
 
 /**
   * Clear clcd.

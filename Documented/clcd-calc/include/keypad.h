@@ -6,26 +6,7 @@
 #define MAX_ROWS 4
 #define MAX_COLS 4
 
-/**
-  * Could vary.
-  */
-enum KEY {
-	NUM_0 		= 1,
-	NUM_1 		= 8,
-	NUM_2 		= 9,
-	NUM_3 		= 10,
-	NUM_4 		= 4,
-	NUM_5 		= 5,
-	NUM_6 		= 6,
-	NUM_7 		= 0,
-	NUM_8 		= 1,
-	NUM_9 		= 2,
-	FUN_ADD 	= 11,
-	FUN_SUB 	= 7,
-	FUN_RES 	= 15
-};
-
-typedef void (*keypad_listener)(enum KEY);
+typedef void (*keypad_listener)(int);
 
 struct keypad {
 	bool initialized;
