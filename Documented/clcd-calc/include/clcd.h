@@ -12,6 +12,8 @@
 
 #define CLCD_DATA_PINS	4 		/* number of data pins in this configuration. (hardwired) */
 
+#define CLCD_LINES	2
+#define CLCD_CHARS	16
 
 /**
   * HD44780U commands
@@ -45,6 +47,10 @@
 #define C_FUNSET 	BIT_AT(5) 	/* set function. */
 #define C_FUNSET_DL	BIT_AT(4) 	/* data length. (8 on 1, 4 on 0) */
 #define C_FUNSET_N	BIT_AT(3) 	/* number of lines. (2 on 1, 1 on 0) */
+#define C_FUNSET_F	BIT_AT(2) 	/* large font. cannot be with C_FUNSET_N. */
+
+/* Set DDRAM address */
+#define C_DDRAM_ADD	BIT_AT(7)
 
 
 struct clcd {
@@ -125,5 +131,15 @@ void clcd_put_char(struct clcd* clcd, char c);
  * Write a line. NULL-terminate.
  */
 void clcd_put_line(struct clcd* clcd, char *line);
+
+/**
+  * Set cursor position. (DDRAM address)
+  */
+void clcd_set_cursor(struct clcd* clcd, int pos);
+
+/**
+  * Clear clcd.
+  */
+void clcd_clear(struct clcd *clcd);
 
 #endif /* _CLCD_H */
