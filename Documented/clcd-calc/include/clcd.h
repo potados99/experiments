@@ -1,20 +1,51 @@
 #ifndef _CLCD_H
 #define _CLCD_H
 
-/**
-  * Todo: learn CLCD commands and define them as a macro.
-  * 2019.04.29
-  */
-
 #include <stdbool.h>
 
 #include "pgpio.h"
 #include "machine_specific.h"
+#include "macros.h"
 
-#define CLCD_R_CMD	0 /* register selection for command mode. */
-#define CLCD_R_DATA 	1 /* register selection for data mode. */
+#define CLCD_R_CMD	0 		/* register selection for command mode. */
+#define CLCD_R_DATA 	1 		/* register selection for data mode. */
 
-#define CLCD_DATA_PINS	4 /* number of data pins in this configuration. (hardwired) */
+#define CLCD_DATA_PINS	4 		/* number of data pins in this configuration. (hardwired) */
+
+
+/**
+  * HD44780U commands
+  */
+/* Clear display */
+#define C_CLR_DISP	BIT_AT(0) 	/* clear display and return home. */
+
+/* Return home */
+#define C_RET_HOME	BIT_AT(1) 	/* set DDRAM address to 0. */
+
+/* Entry mode set */
+#define C_ENTRY		BIT_AT(2) 	/* cursor and shift setting. */
+#define C_ENTRY_INC	BIT_AT(1) 	/* cursor move right. */
+#define C_ENTRY_DEC	!BIT_AT(1) 	/* cursor move left. */
+#define C_ENTRY_S	BIT_AT(0) 	/* shift screen, not a cursor. */
+
+/* Display on/off control */
+#define C_DISP		BIT_AT(3) 	/* set display on/off, cursor on/off, cursor blink. */
+#define C_DISP_D	BIT_AT(2) 	/* display on. */
+#define C_DISP_C	BIT_AT(1) 	/* cursor on. */
+#define C_DISP_B	BIT_AT(0) 	/* blink cursor. */
+
+/* Cursor or display shift */
+#define C_SHIFT		BIT_AT(4) 	/* shift cursor or display. */
+#define C_SHIFT_S	BIT_AT(3) 	/* shift display. */
+#define C_SHIFT_C	!BIT_AT(3)	/* shift cursor. */
+#define C_SHIFT_R	BIT_AT(2)	/* shift to right. */
+#define C_SHIFT_L	!BIT_AT(2)	/* shift to left.*/
+
+/* Function set */
+#define C_FUNSET 	BIT_AT(5) 	/* set function. */
+#define C_FUNSET_DL	BIT_AT(4) 	/* data length. (8 on 1, 4 on 0) */
+#define C_FUNSET_N	BIT_AT(3) 	/* number of lines. (2 on 1, 1 on 0) */
+
 
 struct clcd {
 	bool initialized;
@@ -64,8 +95,8 @@ static inline void _clcd_write_nibble(struct clcd* clcd, unsigned char nibble) {
  * Write to (D4..D7) twice, 4 bits at once.
  */
 static inline void _clcd_write_byte(struct clcd* clcd, unsigned char byte) {
-	_clcd_write_nibble(clcd, (byte >> 4) & 0x0f); /* high 4 */
-	_clcd_write_nibble(clcd, byte & 0x0f); /* low 4 */
+	_clcd_write_nibble(clcd, HIGH_NIBBLE(byte)); /* high 4 */
+	_clcd_write_nibble(clcd, LOW_NIBBLE(byte)); /* low 4 */
 }
 
 

@@ -54,16 +54,17 @@ void clcd_init(struct clcd* clcd) {
 	  */
 	udelay(35000);
 
-	clcd_put_cmd(clcd, 0x28);
-	clcd_put_cmd(clcd, 0x28);
-	clcd_put_cmd(clcd, 0x28);
+	for (int i = 0; i < 3; ++i) {
+		clcd_put_cmd(clcd, C_FUNSET | C_FUNSET_N); /* function set with two line. */
+		udelay(5000);
+	}
 
-	clcd_put_cmd(clcd, 0x0e);
-	clcd_put_cmd(clcd, 0x02);
+	clcd_put_cmd(clcd, C_DISP | C_DISP_D); /* display on, cursor off, not blink */
+	clcd_put_cmd(clcd, C_RET_HOME); /* return home */
 	
 	udelay(3000);
 
-	clcd_put_cmd(clcd, 0x01);
+	clcd_put_cmd(clcd, C_CLR_DISP); /* clear display */
 	
 	udelay(3000);
 }
