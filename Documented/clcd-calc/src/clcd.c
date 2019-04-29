@@ -92,7 +92,7 @@ void clcd_put_char(struct clcd *clcd, char c) {
 void clcd_put_line(struct clcd *clcd, char *line) {
 	ASSERTDO((clcd != NULL), print_error("clcd_put_line: clcd is null.\n"); return);
 	ASSERTDO((clcd->initialized), print_error("clcd_put_line: clcd is not initialized.\n"); return);
-	ASSERTDO((line != null), print_error("clcd_put_line: line is null.\n"); return);
+	ASSERTDO((line != NULL), print_error("clcd_put_line: line is null.\n"); return);
 
 	int len = strlen(line);
 	
