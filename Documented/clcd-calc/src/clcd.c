@@ -88,6 +88,10 @@ void clcd_put_char(struct clcd *clcd, char c) {
 	_clcd_write_byte(clcd, c);
 
 	clcd->cur_pos += 1;
+	if ((clcd->cur_pos % CLCD_CHARS) == (CLCD_CHAR - 1)) {
+		/* at the end of the line. */
+		clcd_set_cursor(clcd, clcd->cur_pos + 1);
+	}
 }
 void clcd_put_line(struct clcd *clcd, char *line) {
 	ASSERTDO((clcd != NULL), print_error("clcd_put_line: clcd is null.\n"); return);
