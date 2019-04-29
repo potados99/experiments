@@ -50,6 +50,7 @@
 struct clcd {
 	bool initialized;
 
+	int cur_pos;
 	int data_pins[CLCD_DATA_PINS];
 	int reg_pin; /* register selection */
 	int en_pin; /* enable */

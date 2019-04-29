@@ -17,6 +17,7 @@ void clcd_setup(struct clcd* clcd, int data_pins[], int reg_pin, int en_pin) {
 	  * initialize.
 	  */
 	clcd->initialized = false;
+	clcd->cur_pos = 0;
 	memset(clcd->data_pins, 0, sizeof(int) * CLCD_DATA_PINS);
 	clcd->reg_pin = 0;
 	clcd->en_pin = 0;
@@ -30,11 +31,11 @@ void clcd_setup(struct clcd* clcd, int data_pins[], int reg_pin, int en_pin) {
 
 	clcd->reg_pin = reg_pin;
 	clcd->en_pin = en_pin;
-
-	clcd->initialized = true;
 }
 
 void clcd_init(struct clcd* clcd) {
+	ASSERTDO((clcd != NULL), print_error("clcd_init: clcd is null.\n"); return);
+	
 	/**
 	  * basic gpio pin setup.
 	  */
@@ -48,7 +49,8 @@ void clcd_init(struct clcd* clcd) {
 	digital_write(clcd->reg_pin, PGPIO_LOW);
 	digital_write(clcd->en_pin, PGPIO_LOW);
 
-
+	clcd->initialized = true;
+	
 	/**
 	  * wait and apply commands.
 	  */
@@ -70,26 +72,53 @@ void clcd_init(struct clcd* clcd) {
 }
 
 void clcd_put_cmd(struct clcd *clcd, unsigned char cmd) {
+	ASSERTDO((clcd != NULL), print_error("clcd_put_cmd: clcd is null.\n"); return);
+	ASSERTDO((clcd->initialized), print_error("clcd_put_cmd: clcd is not initialized.\n"); return);
+
 	_clcd_select_cmd(clcd->reg_pin);
 	_clcd_write_byte(clcd, cmd);
 }
 
 void clcd_put_char(struct clcd *clcd, char c) {
+	ASSERTDO((clcd != NULL), print_error("clcd_put_char: clcd is null.\n"); return);
+	ASSERTDO((clcd->initialized), print_error("clcd_put_char: clcd is not initialized.\n"); return);
+	ASSERTDO((clcd->cur_pos < CLCD_LINES * CLCD_CHARS), print_info("clcd_put_char: cannot write more.\n"); return);
+
 	_clcd_select_data(clcd->reg_pin);
 	_clcd_write_byte(clcd, c);
-}
 
+	clcd->cur_pos += 1;
+}
 void clcd_put_line(struct clcd *clcd, char *line) {
+	ASSERTDO((clcd != NULL), print_error("clcd_put_line: clcd is null.\n"); return);
+	ASSERTDO((clcd->initialized), print_error("clcd_put_line: clcd is not initialized.\n"); return);
+	ASSERTDO((line != null), print_error("clcd_put_line: line is null.\n"); return);
+
 	int len = strlen(line);
 	
 	for (register int i = 0; i < len; ++i) {
-		if (line[i] == '\n') {
-			clcd_put_cmd(clcd, 0xc0);
-		} else {
-			clcd_put_char(clcd, line[i]);
-		}
+		clcd_put_char(clcd, line[i]);
 	}
 
-	clcd_put_cmd(clcd, 0xC0); /* linebreak */
+	if (clcd->cur_pos < CLCD_CHARS) {
+		clcd_put_cmd(clcd, 0xC0); /* linebreak */
+	}
 }
 
+void clcd_set_cursor(struct clcd* clcd, int pos) {
+	ASSERTDO((clcd != NULL), print_error("clcd_set_cursor: clcd is null.\n"); return);
+	ASSERTDO((clcd->initialized), print_error("clcd_set_cursor: clcd is not initialized.\n"); return);
+	ASSERTDO((pos > 0), print_error("clcd_set_cursor: pos cannot be under zero.\n"); return);
+	ASSERTDO((pos < 32), print_error("clcd_set_cursor: pos cannot reach or exceed 32.\n"); return);
+
+	clcd_put_cmd(clcd, C_DDRAM_ADD | ( (pos > 15) ? (pos + (0x40 - 0x0F)) : pos));
+	clcd->cur_pos = pos;
+}
+
+void clcd_clear(struct clcd* clcd) {
+	ASSERTDO((clcd != NULL), print_error("clcd_set_cursor: clcd is null.\n"); return);
+	ASSERTDO((clcd->initialized), print_error("clcd_set_cursor: clcd is not initialized.\n"); return);
+	
+	clcd_put_cmd(clcd, C_CLR_DISP);
+	clcd->cur_pos = 0;
+}
