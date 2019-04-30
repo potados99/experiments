@@ -1,6 +1,19 @@
 #ifndef _CLCD_H
 #define _CLCD_H
 
+/**
+  * Easy control HD44780.
+  *
+  * Usage:
+  *	1) Declare and allocate a variable of type struct clcd.
+  *	2) clcd_setup(): variable init and hardware setup.
+  *	3) clcd_init(): get display ready for use.
+  *
+  * Notice:
+  *	Set CLCD_DELAY for your own sake.
+  *
+  */
+
 #include "pgpio.h"
 #include "machine_specific.h"
 #include "macros.h"
@@ -14,6 +27,11 @@
 
 #define CLCD_LINES	2
 #define CLCD_CHARS	16
+
+/**
+  * Edit me if you want.
+  */
+#define CLCD_DELAY 500
 
 /**
   * HD44780U commands
@@ -67,9 +85,9 @@ struct clcd {
  */
 static inline void _clcd_apply(int en_pin) {
 	digital_write(en_pin, PGPIO_HIGH);
-	udelay(500);
+	udelay(CLCD_DELAY);
 	digital_write(en_pin, PGPIO_LOW);
-	udelay(500);
+	udelay(CLCD_DELAY);
 }
 
 /**
@@ -77,7 +95,7 @@ static inline void _clcd_apply(int en_pin) {
  */
 static inline void _clcd_select_cmd(int reg_pin) {
 	digital_write(reg_pin, CLCD_R_CMD);
-	udelay(1000);
+	udelay(CLCD_DELAY);
 }
 
 /**
@@ -85,7 +103,7 @@ static inline void _clcd_select_cmd(int reg_pin) {
   */
 static inline void _clcd_select_data(int reg_pin) {
 	digital_write(reg_pin, CLCD_R_DATA);
-	udelay(1000);
+	udelay(CLCD_DELAY);
 }
 
 /**
@@ -118,7 +136,7 @@ void clcd_setup(struct clcd* clcd, int data_pins[], int reg_pin, int en_pin);
 /**
  * Get CLCD ready for use.
  */
-void clcd_init(struct clcd* clcd);
+void clcd_ready(struct clcd* clcd);
 
 /**
  * Send a command to the CLCD.

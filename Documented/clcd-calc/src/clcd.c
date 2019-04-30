@@ -34,7 +34,7 @@ void clcd_setup(struct clcd* clcd, int data_pins[], int reg_pin, int en_pin) {
 	clcd->en_pin = en_pin;
 }
 
-void clcd_init(struct clcd* clcd) {
+void clcd_ready(struct clcd* clcd) {
 	ASSERTDO((clcd != NULL), print_error("clcd_init: clcd is null.\n"); return);
 	
 	/**

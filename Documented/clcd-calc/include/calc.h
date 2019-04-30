@@ -1,6 +1,22 @@
 #ifndef _CALC_H
 #define _CALC_H
 
+/**
+  * Decimal Adder/Subtractor with display.
+  *
+  * Usage:
+  * 	1) Declare and allocate a variable type of struct calc.
+  *	2) calc_setup(): initialize variable and get ready.
+  *	3) calc_attatch_callback(): add callbacks.
+  *
+  * Notice:
+  *	Three callbacks needed. 
+  *	One for when to add a character to display,
+  *	One for when to shift a cursor of display.
+  * 	One for when to clear a display.
+  *
+  */
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -62,8 +78,14 @@ static inline bool calc_isdigit(int num) {
 	return ((num >= 0) && (num <= 9));
 }
 
+/**
+  * Initialize struct fields.
+  */
 void calc_setup(struct calc *calc);
 
+/**
+  * Add callbacks.
+  */
 void calc_attach_callback(struct calc *calc, calc_callback on_append, calc_callback on_shift, calc_callback on_clear);
 
 /**

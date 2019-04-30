@@ -64,7 +64,7 @@ void setup() {
 	keypad_set_listener(mykeypad, on_key_pressed);
 	
 	clcd_setup(myclcd, data_pins, reg_pin, en_pin);
-	clcd_init(myclcd);
+	clcd_ready(myclcd);
 
 	calc_setup(mycalc);
 	calc_attach_callback(mycalc, on_calc_append, on_calc_shift, on_calc_clear);

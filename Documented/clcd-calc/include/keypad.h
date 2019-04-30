@@ -1,6 +1,20 @@
 #ifndef _KEYPAD_H
 #define _KEYPAD_H
 
+/**
+  * Abstract keypad matrix.
+  * 
+  * Usage: 
+  * 	1) Declare and allocate a variable of type struct keypad.
+  *	2) keypad_setup(): variable init and hardware setup.
+  *	3) keypad_set_listener(): add callback.
+  *
+  *
+  * Notice:
+  *	A macro variable KEYPAD_SCAN_DELAY must exist.
+  *	Callback must be registered to use full functionality.
+  */
+
 #include <stdbool.h>
 
 #define MAX_ROWS 4
