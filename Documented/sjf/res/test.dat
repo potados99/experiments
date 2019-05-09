@@ -1,1 +1,7 @@
-1234
+// format [task name]:[time arrival]:[burst time]
+
+my-first-task:1:31
+the-second-light-task:15:3
+most-heavy-one:17:65
+say-hello:21:5
+whats-up:24:3

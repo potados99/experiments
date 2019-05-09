@@ -40,13 +40,12 @@ resources:
 clean:
 	@echo [$@]
 	rm -rf $(TARGET_DIR) $(OBJ_DIR)
-	rm $(TARGET)
 
 # LINK
 $(TARGET): $(OBJECTS)
 	@echo [$@]
 	$(LINK.c) -o $(TARGET_DIR)/$(TARGET) $^ $(LIB)
-	@ln -sf $(TARGET_DIR)/$(TARGET) ./
+#	@ln -sf $(TARGET_DIR)/$(TARGET) ./
 
 # COMPILE
 $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT)
