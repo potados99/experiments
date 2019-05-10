@@ -1,7 +1,7 @@
 // format [task name]:[time arrival]:[burst time]
 
-my-first-task:1:31
-the-second-light-task:15:3
-most-heavy-one:17:65
-say-hello:21:5
-whats-up:24:3
+heavy_task:1:31
+the_most_light_task:7:2
+most_heavy_task:17:65
+flow_like_air:21:5
+feather_task:24:3
