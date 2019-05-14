@@ -1,4 +1,4 @@
-# Experiment on Unix Semaphore
+# Experiment on System V Semaphore
 
 ## Purpose
 To test System V semaphore.
