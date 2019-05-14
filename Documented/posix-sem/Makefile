@@ -7,7 +7,7 @@ TARGET		:= $(TARGET_INITIAL)
 
 CC		:= gcc
 CFLAGS		:= -Wall
-LIB		:= -lrt
+LIB		:=
 
 TARGET_DIR	:= bin
 SRC_DIR		:= src
