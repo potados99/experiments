@@ -18,6 +18,10 @@ typedef struct phil phil_t;
 int phil_init(phil_t *phil);
 int phil_destory(phil_t *phil);
 
+int phil_try_eat(phil_t *phil);
+int phil_eat(phil_t *phil);
+int phil_fin_eat(phil_t *phil);
+
 // eat, think, loop, etc...
 
 #endif /* _phil_h */
