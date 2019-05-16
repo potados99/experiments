@@ -11,7 +11,7 @@ void *consume_loop(void *arg) {
 	
 	int val;
 
-	while(1) {
+	while (val < 20) {
 		if (sem_wait(&occupied)) {
 			perror("error while sem_wait() by consumer");
 		}
@@ -27,5 +27,7 @@ void *consume_loop(void *arg) {
 		}
 	}
 	
+	printf("\nconsumer is now full :) stopping here.\n");
+
 	return NULL;
 }

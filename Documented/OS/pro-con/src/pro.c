@@ -16,7 +16,8 @@ void *produce_loop(void *arg) {
 
 	srand(time(NULL));
 
-	while(1) {
+	while(value < 20) {
+
 		if (sem_wait(&empty)) {
 			perror("error while sem_wait() by producer");
 		}
@@ -34,5 +35,7 @@ void *produce_loop(void *arg) {
 		}
 	}
 	
+	printf("\nproducer has done its job :) stopping here.\n");
+
 	return NULL;
 }

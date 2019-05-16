@@ -65,7 +65,15 @@ int main(int argc, const char * argv[]) {
 	if ((errno_local = pthread_join(thread_con, NULL))) {
 		error(1, errno_local, "error while pthrea_join() with thread_con");
 	}
+
 	
+	printf("\nboth producer and comsumer did their jobs. now will exit.\n");
+
+	/**
+	  * Finish
+	  */
+	sem_destroy(&empty);
+	sem_destroy(&occupied);
 	rb_free(&shrd_buf);
 
 	return 0;
