@@ -14,7 +14,7 @@ static inline void wiringPiSetup() { printf("wiringPiSetup()\n"); }
 static inline void pinMode(int pin, int mode) { printf("pinMode(%d, %d)\n", pin, mode); }
 static inline void pullUpDnControl(int pin, int mode) { printf("pullUpDnControl(%d, %d)\n", pin, mode); }
 static inline void digitalWrite(int pin, int val) { printf("digitalWrite(%d, %d)\n", pin, val); }
-static inline int digitalRead(int pin) {  printf("digitalRead(%d)\n", pin); return 0;}
+static inline int digitalRead(int pin) {  printf("digitalRead(%d)\n", pin); return 0; }
 static inline void delayMicroseconds(int msec) { printf("delayMicroseconds(%d)\n", msec); usleep(msec); }
 #define INPUT 0x10
 #define OUTPUT 0x20
