@@ -2,12 +2,12 @@
 
 # Makefile boilerplate version 0.1.0 (20190416)
 
-TARGET_INITIAL	:= THISISINITIALTARGET
+TARGET_INITIAL	:= editor
 TARGET		:= $(TARGET_INITIAL)
 
 CC		:= gcc
 CFLAGS		:= -Wall
-LIB		:=
+LIB		:= -lwiringPi -lwiringPiDev -lm -lpthread -lrt -lcrypt 
 
 TARGET_DIR	:= bin
 SRC_DIR		:= src
@@ -17,6 +17,15 @@ SRC_EXT		:= c
 OBJ_EXT		:= o
 
 #################################################
+
+
+################## EDIT HERE ####################
+
+MACROS := -DVERBOSE=1 -DDEBUG
+
+#################################################
+
+
 
 ## DO NOT EDIT BELOW ##
 
@@ -45,4 +54,4 @@ $(TARGET): $(OBJECTS)
 # COMPILE
 $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT)
 	@echo [$@]
-	$(CC) $(CFLAGS) -c -o $@ $< -I$(INC_DIR)
+	$(CC) $(CFLAGS) -c -o $@ $< -I$(INC_DIR) $(MACROS)
