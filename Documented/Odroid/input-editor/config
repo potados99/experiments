@@ -1,0 +1,7 @@
+#!/bin/sh
+
+read -p "Enter target name: " name
+
+sed -i "" "s/THISISINITIALTARGET/$name/g" Makefile
+
+rm ./config
