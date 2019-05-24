@@ -256,4 +256,35 @@ const unsigned int font[28][24] = {
     }
 };
 
+static inline int font_index(char c) {
+    /**
+     * ASCII
+     * alphabet: 97(a) ~ 122(z)
+     * space: 32
+     * dot: 46
+     */
+    
+    if (c == 32) {
+        /**
+         * space
+         */
+        return 27;
+    }
+    else if (c == 46) {
+        /**
+         * dot
+         */
+        return 26;
+    }
+    else if (c >= 97 && c <= 122) {
+        /**
+         * alphabet
+         */
+        return c - 97;
+    }
+    else {
+        return -1;
+    }
+}
+
 #endif /* _FONT_H */
