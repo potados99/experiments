@@ -9,7 +9,6 @@
   *	2) keypad_setup(): variable init and hardware setup.
   *	3) keypad_set_listener(): add callback.
   *
-  *
   * Notice:
   *	A macro variable KEYPAD_SCAN_DELAY must exist.
   *	Callback must be registered to use full functionality.
@@ -23,15 +22,15 @@
 typedef void (*keypad_listener)(int);
 
 struct keypad {
-	bool initialized;
+	bool                initialized;
 
-	int rows[MAX_ROWS];
-	int n_rows;
+	int                 rows[MAX_ROWS];
+	int                 n_rows;
 
-	int cols[MAX_COLS];
-	int n_cols;
+	int                 cols[MAX_COLS];
+	int                 n_cols;
 
-	keypad_listener callback;	
+	keypad_listener     callback;
 };
 
 /**

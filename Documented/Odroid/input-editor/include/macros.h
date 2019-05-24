@@ -5,13 +5,13 @@
 /**
   * Bitwise operation helper.
   */
-#define ADD(X, Y) 				\
+#define ADD(X, Y) 				                \
 	((X) | (Y))
 
-#define SUB(X, Y)				\
+#define SUB(X, Y)				                \
 	((X) & ~(Y))
 
-#define HAS(X, Y)				\
+#define HAS(X, Y)				                \
 	((X) & (Y))
 
 #define HIGH_NIBBLE(b)                          \
@@ -20,18 +20,18 @@
 #define LOW_NIBBLE(b)                           \
 	((b) & 0x0F)
 
-#define BIT_AT(I)				\
+#define BIT_AT(I)				                \
 	(0x01 << (I))
 
 
 /**
   * Assertion for debug.
   */
-#define ASSERTDO(X, WHAT)			\
-	do {					\
-		if (!(X)) {			\
-			WHAT;			\
-		}				\
+#define ASSERTDO(X, WHAT)		                \
+	do {					                    \
+		if (!(X)) {			                    \
+			WHAT;			                    \
+		}				                        \
 	} while(0)				
 
 #define ASSERT(X) ASSERTDO(X, return)

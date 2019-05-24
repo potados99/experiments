@@ -111,7 +111,6 @@ int keypad_read(struct keypad *keypad) {
 
 	return _point_to_index(sel_row, sel_col, keypad->n_cols);
 }
-	
 
 bool keypad_loop(struct keypad *keypad) {
 	ASSERTDO((keypad != NULL), print_error("keypad_loop: keypad is null.\n"); return false);

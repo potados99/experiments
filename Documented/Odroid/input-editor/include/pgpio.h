@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#ifdef DEBUG
+#ifdef DEBUG /* without wiringPi */
 #include <unistd.h>
 static inline void wiringPiSetup() { printf("wiringPiSetup()\n"); }
 static inline void pinMode(int pin, int mode) { printf("pinMode(%d, %d)\n", pin, mode); }
@@ -23,7 +23,7 @@ static inline void delayMicroseconds(int msec) { printf("delayMicroseconds(%d)\n
 #define PUD_UP 0x50
 #define PUD_DN 0x60
 #else
-#include <wiringPi.h> /* not use when debugging */
+#include <wiringPi.h> /* with wiringPi */
 #endif
 
 #include "pgpio.h"
@@ -42,7 +42,7 @@ static bool initialized;
 /**
   * Check if GPIO control is available.
   */
-static inline bool check_init() {
+static inline bool check_init(void) {
 	if (!initialized) {
 		print_info("wiringPi is not initialized.\n");
 		
@@ -55,7 +55,7 @@ static inline bool check_init() {
 /**
   * Do initial things for GPIO.
   */
-static inline void gpio_setup() {
+static inline void gpio_setup(void) {
 	wiringPiSetup();
 	initialized = true;
 
