@@ -106,11 +106,11 @@ int vclcd_close(struct vclcd *vclcd) {
     return 0;
 }
 
-void vclcd_clear(struct vclcd *vclcd) {
+void vclcd_clear(struct vclcd *vclcd, uint16_t pixel) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_clear: vclcd is null.\n"); return);
 
     for (int i = 0; i < VCLCD_WIDTH * VCLCD_HEIGHT; ++i) {
-        *(vclcd->mem + i) = 0;
+        *(vclcd->mem + i) = pixel;
     }
 }
 

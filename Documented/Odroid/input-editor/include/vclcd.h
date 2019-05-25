@@ -44,9 +44,9 @@ int vclcd_setup(struct vclcd *vclcd, const char *dev_path);
 int vclcd_close(struct vclcd *vclcd);
 
 /**
- * Clear all pixel to black.
+ * Clear all pixel to @pixel.
  */
-void vclcd_clear(struct vclcd *vclcd);
+void vclcd_clear(struct vclcd *vclcd, uint16_t pixel);
 
 /**
  * Read and return a character at cursor position of vclcd.
