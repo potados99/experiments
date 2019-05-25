@@ -3,11 +3,13 @@
 
 #include "routines.h"
 #include "keypad.h"
+#include "vclcd.h"
 #include "pgpio.h"
 #include "verbose.h"
 #include "machine_specific.h"
 
 struct keypad *mykeypad;
+struct vclcd *myvclcd;
 
 void on_key_pressed(int key_index);
 
@@ -28,10 +30,13 @@ void setup() {
 	int cols[] = { KEYPAD_4, KEYPAD_5, KEYPAD_6, KEYPAD_7 };
 	
 	mykeypad = (struct keypad *)malloc(sizeof(struct keypad) + 1);
-
+    myvclcd = (struct vclcd *)malloc(sizeof(struct vclcd) + 1);
+    
 	keypad_setup(mykeypad, rows, 4, cols, 4);
 	keypad_set_listener(mykeypad, on_key_pressed);
-	
+    
+    vclcd_setup(myvclcd, "/dev/fb2");
+    vclcd_write(myvclcd, 'b');
 }
 
 void loop() {

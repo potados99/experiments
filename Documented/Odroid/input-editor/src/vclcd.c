@@ -61,7 +61,7 @@ int vclcd_setup(struct vclcd *vclcd, const char *dev_path) {
     /**
      * open fd
      */
-    if ((vclcd->fd = open(dev_path, O_RDWR))) {
+    if ((vclcd->fd = open(dev_path, O_RDWR)) == -1) {
         perror("open() failed");
         print_error("vclcd_setup: open() failed with %s.\n", dev_path);
         return -1;
