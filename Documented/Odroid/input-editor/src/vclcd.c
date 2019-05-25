@@ -106,6 +106,13 @@ int vclcd_close(struct vclcd *vclcd) {
     return 0;
 }
 
+void vclcd_clear(struct vclcd *vclcd) {
+    ASSERTDO((vclcd != NULL), print_error("vclcd_clear: vclcd is null.\n"); return);
+
+    for (int i = 0; i < VCLCD_WIDTH * VCLCD_HEIGHT; ++i) {
+        *(vclcd->mem + i) = 0;
+    }
+}
 
 int vclcd_read(struct vclcd *vclcd) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_read: vclcd is null.\n"); return -1);
