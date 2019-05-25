@@ -40,8 +40,8 @@ void setup() {
 }
 
 void loop() {
-	print_info("loop!\n");
-	keypad_loop(mykeypad);
+//	print_info("loop!\n");
+//	keypad_loop(mykeypad);
 	udelay(100000);
 }
 

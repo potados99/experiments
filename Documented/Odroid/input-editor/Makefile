@@ -7,7 +7,7 @@ TARGET		:= $(TARGET_INITIAL)
 
 CC		:= gcc
 CFLAGS		:= -Wall
-LIB		:= -lwiringPi -lwiringPiDev -lm -lpthread -lrt -lcrypt 
+LIB		:= -lwiringPi -lwiringPiDev -lm -lpthread -lrt -lcrypt
 
 TARGET_DIR	:= bin
 SRC_DIR		:= src
@@ -21,7 +21,7 @@ OBJ_EXT		:= o
 
 ################## EDIT HERE ####################
 
-MACROS := -DVERBOSE=1 -DDEBUG
+MACROS := -DVERBOSE=1
 
 #################################################
 
