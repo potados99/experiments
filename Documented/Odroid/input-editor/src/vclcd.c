@@ -132,7 +132,7 @@ int vclcd_write(struct vclcd *vclcd, char c) {
     int pixel_pos;
     for (int row = 0; row < VCLCD_CHAR_HEIGHT; ++row) {
         font_row = font[idx][row];
-        pixel_pos = vclcd_offset(vclcd->curs_pos) + (VCLCD_WIDTH * row);
+        pixel_pos = vclcd_offset(vclcd->curs_pos) + OFFSET_VERTICAL(row);
         
         for (int col = 0; col < VCLCD_CHAR_WIDTH; ++col) {
             if ((font_row & 0x01)) {
