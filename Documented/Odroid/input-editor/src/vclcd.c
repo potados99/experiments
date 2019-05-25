@@ -31,23 +31,26 @@
  * 10 * 8 characters are aligned center horizontally.
  * the left and right margin is 22 ( same as (320 - ((240 * 10) + (4 * 9))) / 2 )
  */
-#define MARGIN          22
-#define ROW(INDEX)      (INDEX / VCLCD_COLS)
-#define COL(INDEX)      (INDEX % VCLCD_COLS)
+#define MARGIN                              22
+#define ROW_INDEX(INDEX)                    (INDEX / VCLCD_COLS)
+#define COL_INDEX(INDEX)                    (INDEX % VCLCD_COLS)
+#define OFFSET_VERTICAL(AMOUNT)             ((VCLCD_WIDTH) * (AMOUNT))
+#define OFFSET_HORIZONTAL(AMOUNT)           (AMOUNT)
 
 /**
  * get address of top left point of the character area cur_pos is at.
  */
 static inline int vclcd_offset(int cur_pos) {
-    return (VCLCD_WIDTH * ((VCLCD_CHAR_HEIGHT + VCLCD_CHAR_PADDING) * ROW(cur_pos)) +
-            ((VCLCD_CHAR_WIDTH + VCLCD_CHAR_PADDING) * COL(cur_pos)) + MARGIN);
+    return  OFFSET_VERTICAL( (VCLCD_CHAR_HEIGHT + VCLCD_CHAR_PADDING) * ROW_INDEX(cur_pos) ) +
+            OFFSET_HORIZONTAL( (VCLCD_CHAR_WIDTH + VCLCD_CHAR_PADDING) * COL_INDEX(cur_pos) ) +
+            MARGIN;
 }
 
 /**
  * get address of bottom left point of the character area cur_pos is at.
  */
 static inline int vclcd_offset_cursor(int cur_pos) {
-    return vclcd_offset(cur_pos) + (VCLCD_WIDTH * VCLCD_CHAR_HEIGHT);
+    return vclcd_offset(cur_pos) + OFFSET_VERTICAL(VCLCD_CHAR_HEIGHT);
 }
 
 int vclcd_setup(struct vclcd *vclcd, const char *dev_path) {
@@ -112,7 +115,6 @@ int vclcd_read(struct vclcd *vclcd) {
 
 int vclcd_write(struct vclcd *vclcd, char c) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_write: vclcd is null.\n"); return -1);
-    
     
     int idx;
     if ((idx = font_index(c)) == -1) {
