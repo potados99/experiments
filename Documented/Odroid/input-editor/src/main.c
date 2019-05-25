@@ -37,7 +37,7 @@ void setup() {
     
     vclcd_setup(myvclcd, "/dev/fb2");
     vclcd_clear(myvclcd, 0xFFFF);
-    vclcd_write(myvclcd, 'b');
+    vclcd_write(myvclcd, 'a');
 }
 
 void loop() {

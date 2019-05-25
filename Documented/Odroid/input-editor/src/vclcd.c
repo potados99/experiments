@@ -127,24 +127,26 @@ int vclcd_write(struct vclcd *vclcd, char c) {
     if ((idx = font_index(c)) == -1) {
         print_error("vclcd_write: attempting to write wrong character.\n");
     }
-    
+
     int font_row;
     int pixel_pos;
+
     for (int row = 0; row < VCLCD_CHAR_HEIGHT; ++row) {
+
         font_row = font[idx][row];
         pixel_pos = vclcd_offset(vclcd->curs_pos) + OFFSET_VERTICAL(row);
-        
+
         for (int col = 0; col < VCLCD_CHAR_WIDTH; ++col) {
             if ((font_row & 0x01)) {
                 *(vclcd->mem + pixel_pos + VCLCD_CHAR_WIDTH - 1 - col) = 0;
             }
-            pixel_pos += 1;
+
             font_row >>= 1;
         }
     }
-    
+
     vclcd->chars[vclcd->curs_pos] = c;
-    
+
     return 0;
 }
 
