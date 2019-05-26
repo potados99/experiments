@@ -4,6 +4,17 @@
 /**
  * Virtual Character LCD.
  *
+ * Supported features:
+ * - write char
+ * - shift chars
+ * - insert & delete char
+ * - move cursor
+ *
+ * Usage:
+ *  * 1) Declare and allocate a variable of type struct vclcd.
+ *    2) vclcd_setup(): variable init and hardware setup.
+ *
+ * Notice:
  * Macros under must be declared:
  * VCLCD_WIDTH
  * VCLCD_HEIGHT

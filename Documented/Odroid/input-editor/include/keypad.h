@@ -5,7 +5,7 @@
   * Abstract keypad matrix.
   * 
   * Usage: 
-  * 	1) Declare and allocate a variable of type struct keypad.
+  * 1) Declare and allocate a variable of type struct keypad.
   *	2) keypad_setup(): variable init and hardware setup.
   *	3) keypad_set_listener(): add callback.
   *

@@ -209,18 +209,19 @@ int vclcd_setup(struct vclcd *vclcd, const char *dev_path) {
     return 0;
 }
 
+/* Tested 190526 */
 int vclcd_close(struct vclcd *vclcd) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_close: vclcd is null.\n"); return -1);
     
     _vclcd_clear(vclcd, PIXEL_BLACK, PIXEL_BLACK);
     
-    if (munmap(vclcd->mem, VCLCD_WIDTH * VCLCD_HEIGHT * sizeof(uint16_t))) {
+    if (munmap(vclcd->mem, VCLCD_WIDTH * VCLCD_HEIGHT * sizeof(uint16_t)) == -1) {
         perror("munmap() failed");
         print_error("vclcd_close: munmap() failed.\n");
         return -1;
     }
     
-    if (close(vclcd->fd)) {
+    if (close(vclcd->fd) == -1) {
         perror("close() failed");
         print_error("vclcd_close: close() failed.\n");
         return -1;
@@ -298,7 +299,7 @@ int vclcd_insert(struct vclcd *vclcd, char c) {
     return 0;
 }
 
-/* */
+/* Tested 190526 */
 int vclcd_delete(struct vclcd *vclcd) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_delete: vclcd is null.\n"); return -1);
 
@@ -332,7 +333,7 @@ int vclcd_delete(struct vclcd *vclcd) {
     return 0;
 }
 
-/* */
+/* Tested 190526 */
 int vclcd_replace(struct vclcd *vclcd, char c) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_replace: vclcd is null.\n"); return -1);
     ASSERTDO((font_index(c) != -1), print_error("vclcd_replace: invalid character: [%c].\n", c); return -1);
