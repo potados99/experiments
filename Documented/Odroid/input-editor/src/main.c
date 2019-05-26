@@ -1,17 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "routines.h"
 #include "keypad.h"
 #include "vclcd.h"
+#include "editor.h"
+
+#include "routines.h"
 #include "pgpio.h"
 #include "verbose.h"
 #include "machine_specific.h"
 
 struct keypad *mykeypad;
 struct vclcd *myvclcd;
+struct editor *myeditor;
 
+/**
+ * Callbacks
+ */
 void on_key_pressed(int key_index);
+void notify_cursor_move(int delta);
+void notify_insert(int c);
+void notify_delete(int _);
+void notify_replace(int c);
+
 
 int main(int argc, const char * argv[]) {
 	setup();
@@ -31,142 +42,41 @@ void setup() {
 	
 	mykeypad = (struct keypad *)malloc(sizeof(struct keypad) + 1);
     myvclcd = (struct vclcd *)malloc(sizeof(struct vclcd) + 1);
+    myeditor = (struct editor *)malloc(sizeof(struct editor) + 1);
     
 	keypad_setup(mykeypad, rows, 4, cols, 4);
 	keypad_set_listener(mykeypad, on_key_pressed);
     
-    /**
-     * Test code
-     */
-    vclcd_setup(myvclcd, "/dev/fb2");
-    fgetc(stdin);
+    vclcd_setup(myvclcd, FDFILE_PATH);
+ 
+    editor_setup(myeditor);
     
-    /*
-    _vclcd_draw_char(myvclcd, myvclcd->curs_pos, 'a', PIXEL_BLACK);
-    myvclcd->chars_len++;
-    myvclcd->chars[myvclcd->curs_pos] = 'a';
-    vclcd_seek(myvclcd, 1, SEEK_CUR);
-    vclcd_dump(myvclcd);
-    fgetc(stdin);
-
-    _vclcd_draw_char(myvclcd, myvclcd->curs_pos, 'b', PIXEL_BLACK);
-    myvclcd->chars_len++;
-    myvclcd->chars[myvclcd->curs_pos] = 'b';
-    vclcd_seek(myvclcd, 1, SEEK_CUR);
-    vclcd_dump(myvclcd);
-    fgetc(stdin);
-
-    _vclcd_draw_char(myvclcd, myvclcd->curs_pos, 'c', PIXEL_BLACK);
-    myvclcd->chars_len++;
-    myvclcd->chars[myvclcd->curs_pos] = 'c';
-    vclcd_seek(myvclcd, 1, SEEK_CUR);
-    vclcd_dump(myvclcd);
-    fgetc(stdin);
-
-    _vclcd_draw_char(myvclcd, myvclcd->curs_pos, 'd', PIXEL_BLACK);
-    myvclcd->chars_len++;
-    myvclcd->chars[myvclcd->curs_pos] = 'd';
-    vclcd_seek(myvclcd, 1, SEEK_CUR);
-    vclcd_dump(myvclcd);
-    fgetc(stdin);
-
-
-//    _vclcd_shift(myvclcd, 1, 3, -1);
-//    _vclcd_shift(myvclcd, 2, 1, -1);
-//    _vclcd_shift(myvclcd, 1, 2, 1);
-    _vclcd_shift(myvclcd, 1, 3, 25);
-    vclcd_dump(myvclcd);
-    */
+    struct editor_callbacks callbacks = {
+      notify_cursor_move, notify_insert, notify_delete, notify_replace
+    };
     
-    fgetc(stdin);
-
-    vclcd_insert(myvclcd, 'a');
-    vclcd_seek(myvclcd, 1, SEEK_CUR);
-    vclcd_dump(myvclcd);
-    
-    fgetc(stdin);
-    
-    vclcd_insert(myvclcd, 'b');
-    vclcd_seek(myvclcd, 1, SEEK_CUR);
-    vclcd_dump(myvclcd);
-    
-    fgetc(stdin);
-    
-    vclcd_insert(myvclcd, 'c');
-    vclcd_seek(myvclcd, 1, SEEK_CUR);
-    vclcd_dump(myvclcd);
-    
-    fgetc(stdin);
-    
-    vclcd_insert(myvclcd, 'd');
-    vclcd_dump(myvclcd);
-    
-    fgetc(stdin);
-    
-    vclcd_insert(myvclcd, 'e');
-    vclcd_dump(myvclcd);
-    
-    fgetc(stdin);
-    
-    vclcd_insert(myvclcd, 'f');
-    vclcd_dump(myvclcd);
-    
-    fgetc(stdin);
-
-   vclcd_delete(myvclcd);
-    vclcd_dump(myvclcd);
-
-    fgetc(stdin);
-
-   vclcd_delete(myvclcd);
-    vclcd_dump(myvclcd);
-
-    fgetc(stdin);
-
-   vclcd_delete(myvclcd);
-    vclcd_dump(myvclcd);
-
-    fgetc(stdin);
-
-   vclcd_delete(myvclcd);
-    vclcd_dump(myvclcd);
-
-    fgetc(stdin);
-    
-   vclcd_delete(myvclcd);
-    vclcd_dump(myvclcd);
-
-    fgetc(stdin);
-    
-   vclcd_delete(myvclcd);
-    vclcd_dump(myvclcd);
-
-    fgetc(stdin);
-
-   vclcd_delete(myvclcd);
-    vclcd_dump(myvclcd);
-
-    fgetc(stdin);
-
-   vclcd_delete(myvclcd);
-    vclcd_dump(myvclcd);
-
-    fgetc(stdin);
-
-
-    /**
-     * Test code done
-     */
-    
-    
+    editor_add_callbacks(myeditor, callbacks);
 }
 
 void loop() {
-//	print_info("loop!\n");
-//	keypad_loop(mykeypad);
-	udelay(100000);
+	keypad_loop(mykeypad);
 }
+
 
 void on_key_pressed(int key_index) {
 	print_info("[key at index %d pressed.]\n", key_index);
+    editor_input(myeditor, key_index);
+}
+
+void notify_cursor_move(int delta) {
+    print_info("[cursor move %s.]\n", delta > 0 ? "right" : "left");
+}
+void notify_insert(int c) {
+    print_info("[insert %c.]\n", c);
+}
+void notify_delete(int _) {
+    print_info("[delete character.]\n");
+}
+void notify_replace(int c) {
+    print_info("[replace with %c.]\n", c);
 }

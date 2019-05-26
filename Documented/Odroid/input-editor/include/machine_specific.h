@@ -34,4 +34,9 @@
 #define VCLCD_ROWS              8 /* 10 chars in a line. */
 #define VCLCD_CURSOR_THICKNESS  2
 
+/**
+ * LCD path
+ */
+#define FDFILE_PATH             "/dev/fb2"
+
 #endif /* _MACHINE_SPECIFIC_H */
