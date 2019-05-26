@@ -151,13 +151,13 @@ int vclcd_write(struct vclcd *vclcd, char c, uint16_t pixel) {
     
     for (int row = 0; row < VCLCD_CHAR_HEIGHT; ++row) {
         cur_row = *font_rows++;
-
         address = vclcd->mem + pixel_pos + VCLCD_CHAR_WIDTH - 1;
+        
         for (int col = 0; col < VCLCD_CHAR_WIDTH; ++col) {
-            if ((cur_row & 0x01)) {
-                *address-- = pixel;
-            }
-
+            if ((cur_row & 0x01))
+                *address = pixel;
+            --address;
+            
             cur_row >>= 1;
         }
         
