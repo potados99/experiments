@@ -41,17 +41,17 @@ void setup() {
     vclcd_setup(myvclcd, "/dev/fb2");
     fgetc(stdin);
     
-    _vclcd_write(myvclcd, 'a', myvclcd->curs_pos, PIXEL_BLACK);
+    _vclcd_write(myvclcd, myvclcd->curs_pos, 'a', PIXEL_BLACK);
     myvclcd->chars_len++;
     vclcd_seek(myvclcd, 1, SEEK_CUR);
     fgetc(stdin);
 
-    _vclcd_write(myvclcd, 'b', myvclcd->curs_pos, PIXEL_BLACK);
+    _vclcd_write(myvclcd, myvclcd->curs_pos, 'b', PIXEL_BLACK);
     myvclcd->chars_len++;
     vclcd_seek(myvclcd, 1, SEEK_CUR);
     fgetc(stdin);
 
-    _vclcd_write(myvclcd, 'c', myvclcd->curs_pos, PIXEL_BLACK);
+    _vclcd_write(myvclcd, myvclcd->curs_pos, 'c', PIXEL_BLACK);
     myvclcd->chars_len++;
     vclcd_seek(myvclcd, 1, SEEK_CUR);
     fgetc(stdin);
