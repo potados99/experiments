@@ -125,6 +125,8 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
     int affected_end = 0;
     
     
+    usleep(1000000);
+    
     /**********
      * Graphic - clear affected characters.
      **********/
@@ -141,6 +143,7 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
         _vclcd_write(vclcd, i, vclcd->chars[i], COLOR_NONE);
     }
     
+    usleep(1000000);
     
     /**********
      * Data - update data.
@@ -159,6 +162,8 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
         vclcd->chars_len += offset;
     }
     
+    
+    usleep(1000000);
     
     /**********
      * Graphic - write charactes again.
