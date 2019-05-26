@@ -16,6 +16,7 @@
  * VCLCD_CHAR_PADDING
  * VCLCD_COLS
  * VCLCD_ROWS
+ * VCLCD_CURSOR_THICKNESS
  */
 
 #include "machine_specific.h"
@@ -71,6 +72,10 @@ int vclcd_read(struct vclcd *vclcd);
  */
 int vclcd_write(struct vclcd *vclcd, char c, uint16_t pixel);
 
+/**
+ * Draw a cursor at current cursor position.
+ */
+int vclcd_draw_cursor(struct vclcd *vclcd, uint16_t pixel);
 
 /**
  * Move cursor position.
