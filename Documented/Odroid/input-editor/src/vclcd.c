@@ -119,9 +119,9 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
     int affected_end = 0;
     
     
-    /**********
+    /****************************************
      * Graphic - clear affected characters.
-     **********/
+     ****************************************/
     if (offset > 0) {
         affected_start = start;
         affected_end = start + length - 1 + offset;
@@ -139,9 +139,9 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
     }
     
     
-    /**********
+    /****************************************
      * Data - update data.
-     **********/
+     ****************************************/
     memmove(vclcd->chars + start + offset, vclcd->chars + start, length);
     
     /* fill emptiness with [space] */
@@ -157,10 +157,9 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
     }
     
     
-    /**********
+    /****************************************
      * Graphic - write charactes again.
-     **********/
-
+     ****************************************/
     for (int i = affected_start; i <= affected_end; ++i) {
         if (vclcd->chars[i]) /* draw only non-null char. */
             _vclcd_draw_char(vclcd, i, vclcd->chars[i], COLOR_CHARACTER);
@@ -273,6 +272,11 @@ int vclcd_insert(struct vclcd *vclcd, char c) {
     int cursor_on_char = (vclcd->curs_pos < vclcd->chars_len);
     int shift_needed = cursor_on_char;
     
+    
+    /****************************************
+     * Graphic and data - shift, redraw
+     * and apply it to data.
+     ****************************************/
     if (shift_needed) {
         if (_vclcd_shift(vclcd, vclcd->curs_pos, vclcd->chars_len - vclcd->curs_pos, 1) == -1) {
             print_error("vclcd_insert: _vclcd_shift() failed.\n");
@@ -280,11 +284,20 @@ int vclcd_insert(struct vclcd *vclcd, char c) {
         }
     }
     
+    
+    /****************************************
+     * Graphic - draw new character
+     ****************************************/
     if (_vclcd_draw_char(vclcd, vclcd->curs_pos, c, COLOR_CHARACTER) == -1) {
         print_error("vclcd_insert: _vclcd_draw_char() failed.\n");
         return -1;
     }
     
+    
+    /****************************************
+     * Data - assign character and
+     * increase length if not updated by shift.
+     ****************************************/
     if (!shift_needed) {
         /**
          * _vclcd_shift() increases char_len.
@@ -313,17 +326,27 @@ int vclcd_delete(struct vclcd *vclcd) {
          * But without it we have to do it manually.
          */
         
-        /* remove pixels. */
+        
+        /****************************************
+         * Graphic - erase character from LCD.
+         ****************************************/
         if (_vclcd_draw_char(vclcd, vclcd->curs_pos, vclcd->chars[vclcd->curs_pos], COLOR_NONE) == -1) {
             print_error("vclcd_delete: _vclcd_draw_char() failed.\n");
             return -1;
         }
         
-        /* remove data. */
+        
+        /****************************************
+         * Data - update data.
+         ****************************************/
         vclcd->chars[vclcd->curs_pos] = '\0';
         vclcd->chars_len -= 1;
     }
     else {
+        
+        /****************************************
+         * Graphic and data - shift.
+         ****************************************/
         if (_vclcd_shift(vclcd, vclcd->curs_pos + 1, vclcd->chars_len - 1 - vclcd->curs_pos, -1) == -1) {
             print_error("vclcd_delete: _vclcd_shift() failed.\n");
             return -1;
@@ -338,13 +361,24 @@ int vclcd_replace(struct vclcd *vclcd, char c) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_replace: vclcd is null.\n"); return -1);
     ASSERTDO((font_index(c) != -1), print_error("vclcd_replace: invalid character: [%c].\n", c); return -1);
 
+    /****************************************
+     * Graphic
+     ****************************************/
     if (_vclcd_draw_char(vclcd, vclcd->curs_pos, vclcd->chars[vclcd->curs_pos], COLOR_NONE) == -1) {
         print_error("vclcd_delete: _vclcd_draw_char() failed. clear failed.\n");
         return -1;
     }
     
+    
+    /****************************************
+     * Data
+     ****************************************/
     vclcd->chars[vclcd->curs_pos] = c;
     
+    
+    /****************************************
+     * Graphic
+     ****************************************/
     if (_vclcd_draw_char(vclcd, vclcd->curs_pos, vclcd->chars[vclcd->curs_pos], COLOR_NONE) == -1) {
         print_error("vclcd_delete: _vclcd_draw_char() failed. redraw failed.\n");
         return -1;
