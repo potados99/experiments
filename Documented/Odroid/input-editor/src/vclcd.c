@@ -134,7 +134,8 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
     }
 
     for (int i = affected_start; i <= affected_end; ++i) {
-        _vclcd_draw_char(vclcd, i, vclcd->chars[i], COLOR_NONE);
+        if (vclcd->chars[i]) /* end could be null. */
+            _vclcd_draw_char(vclcd, i, vclcd->chars[i], COLOR_NONE);
     }
     
     usleep(1000000);
