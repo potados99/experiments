@@ -318,8 +318,7 @@ int vclcd_insert(struct vclcd *vclcd, char c) {
 int vclcd_delete(struct vclcd *vclcd) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_delete: vclcd is null.\n"); return -1);
 
-    int cursor_on_char = (vclcd->curs_pos < vclcd->chars_len);
-    if (!cursor_on_char) {
+    if (vclcd->chars_len == 0) {
         /**
          * Hahahahahahahahahhahahahahahahahah!!!
          */
@@ -328,6 +327,11 @@ int vclcd_delete(struct vclcd *vclcd) {
         _vclcd_draw_cursor(vclcd, 0, COLOR_CURSOR);
         black = !black;
         
+        return 0;
+    }
+    
+    int cursor_on_char = (vclcd->curs_pos < vclcd->chars_len);
+    if (!cursor_on_char) {
         return 0; /* nothing to delete. */
     }
     int cursor_on_last_char = (vclcd->curs_pos + 1 == vclcd->chars_len);
