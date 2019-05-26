@@ -145,7 +145,7 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
     /**********
      * Data - update data.
      **********/
-    memmove(vclcd->chars + start + offset, vclcd->chars + start, sizeof(char) * length);
+    memmove(vclcd->chars + start + offset, vclcd->chars + start, length);
     
     /* fill emptiness with [space] */
     if (offset > 0) {
