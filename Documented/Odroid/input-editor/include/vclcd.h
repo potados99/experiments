@@ -92,7 +92,7 @@ int _vclcd_draw_cursor(struct vclcd *vclcd, int at, uint16_t pixel);
 /**
  * Shift characters.
  * Shift left will remove character, and right will add [space] character.
- * Cursor will move only when its position is impossible after shift.
+ * Cursor will not be affected.
  */
 int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset);
 

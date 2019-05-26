@@ -41,6 +41,7 @@ void setup() {
     vclcd_setup(myvclcd, "/dev/fb2");
     fgetc(stdin);
     
+    /*
     _vclcd_draw_char(myvclcd, myvclcd->curs_pos, 'a', PIXEL_BLACK);
     myvclcd->chars_len++;
     myvclcd->chars[myvclcd->curs_pos] = 'a';
@@ -75,6 +76,38 @@ void setup() {
 //    _vclcd_shift(myvclcd, 1, 2, 1);
     _vclcd_shift(myvclcd, 1, 3, 25);
     vclcd_dump(myvclcd);
+    */
+    
+    fgetc(stdin);
+
+    vclcd_insert(myvclcd, 'a');
+    vclcd_seek(myvclcd, 1, SEEK_CUR);
+    
+    fgetc(stdin);
+    
+    vclcd_insert(myvclcd, 'b');
+    vclcd_seek(myvclcd, 1, SEEK_CUR);
+    
+    fgetc(stdin);
+    
+    vclcd_insert(myvclcd, 'c');
+    
+    fgetc(stdin);
+    
+    vclcd_insert(myvclcd, 'd');
+    
+    fgetc(stdin);
+    
+    vclcd_insert(myvclcd, 'e');
+    vclcd_seek(myvclcd, 1, SEEK_CUR);
+    
+    fgetc(stdin);
+    
+    vclcd_insert(myvclcd, 'f');
+    vclcd_seek(myvclcd, 1, SEEK_CUR);
+    
+    fgetc(stdin);
+    
     
 
     /**

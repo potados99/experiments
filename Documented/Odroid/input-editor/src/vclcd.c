@@ -23,6 +23,7 @@ static inline int vclcd_offset(int cur_pos) {
 
 /**
  * Get address of bottom left point of the character area cur_pos is at.
+ * Tested 190526
  */
 static inline int vclcd_offset_cursor(int cur_pos) {
     return vclcd_offset(cur_pos) + OFFSET_VERTICAL(VCLCD_CHAR_HEIGHT);
@@ -96,6 +97,7 @@ int _vclcd_draw_cursor(struct vclcd *vclcd, int at, uint16_t pixel) {
     return 0;
 }
 
+/* Tested 190526 */
 int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
     ASSERTDO((vclcd != NULL), print_error("_vclcd_shift: vclcd is null.\n"); return -1);
     ASSERTDO((start >= 0 && start < VCLCD_ROWS * VCLCD_COLS),
@@ -168,42 +170,6 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
 }
 
 
-
-/* Tested 190526 */
-int vclcd_seek(struct vclcd *vclcd, int offset, int whence) {
-    ASSERTDO((vclcd != NULL), print_error("vclcd_cursor_seek: vclcd is null.\n"); return -1);
-
-    int result;
-    switch (whence) {
-        case SEEK_CUR:
-            result = vclcd->curs_pos + offset;
-            break;
-            
-        case SEEK_SET:
-            result = offset;
-            break;
-            
-        default:
-            print_error("vclcd_cursor_seek: only SEEK_CUR and SEEK_SET are allowed.\n");
-            return -1;
-    }
-    
-    int in_display = (result >= 0 && result < (VCLCD_CHAR_WIDTH * VCLCD_CHAR_HEIGHT));
-    ASSERTDO(in_display,
-             print_error("vclcd_cursor_seek: position %d exceeds expected range.\n", result);
-             return -1);
-    
-    int in_range = (result <= vclcd->chars_len);
-    ASSERTDO(in_range,
-             print_info("vclcd_cursor_seek: cursor at the end of string. cannot go further.\n");
-             return vclcd->curs_pos);
-    
-    _vclcd_draw_cursor(vclcd, vclcd->curs_pos, PIXEL_WHITE); /* remove cursor. */
-    _vclcd_draw_cursor(vclcd, result, PIXEL_BLACK); /* redraw cursor. */
-
-    return (vclcd->curs_pos = result);
-}
-
 /* Tested 190526 */
 int vclcd_setup(struct vclcd *vclcd, const char *dev_path) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_setup: vclcd is null.\n"); return -1);
@@ -263,14 +229,58 @@ int vclcd_close(struct vclcd *vclcd) {
     return 0;
 }
 
+/* Tested 190526 */
+int vclcd_seek(struct vclcd *vclcd, int offset, int whence) {
+    ASSERTDO((vclcd != NULL), print_error("vclcd_cursor_seek: vclcd is null.\n"); return -1);
+    
+    int result;
+    switch (whence) {
+        case SEEK_CUR:
+            result = vclcd->curs_pos + offset;
+            break;
+            
+        case SEEK_SET:
+            result = offset;
+            break;
+            
+        default:
+            print_error("vclcd_cursor_seek: only SEEK_CUR and SEEK_SET are allowed.\n");
+            return -1;
+    }
+    
+    int in_display = (result >= 0 && result < (VCLCD_CHAR_WIDTH * VCLCD_CHAR_HEIGHT));
+    ASSERTDO(in_display,
+             print_error("vclcd_cursor_seek: position %d exceeds expected range.\n", result);
+             return -1);
+    
+    int in_range = (result <= vclcd->chars_len);
+    ASSERTDO(in_range,
+             print_info("vclcd_cursor_seek: cursor at the end of string. cannot go further.\n");
+             return vclcd->curs_pos);
+    
+    _vclcd_draw_cursor(vclcd, vclcd->curs_pos, PIXEL_WHITE); /* remove cursor. */
+    _vclcd_draw_cursor(vclcd, result, PIXEL_BLACK); /* redraw cursor. */
+    
+    return (vclcd->curs_pos = result);
+}
+
 int vclcd_insert(struct vclcd *vclcd, char c) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_insert: vclcd is null.\n"); return -1);
 
+    int cursor_at_right_of_last_char = (vclcd->curs_pos == vclcd->chars_len);
     
+    if (!cursor_at_right_of_last_char) {
+        _vclcd_shift(vclcd, vclcd->curs_pos, vclcd->chars_len - vclcd->curs_pos, 1);
+    }
     
+    if (_vclcd_draw_char(vclcd, vclcd->curs_pos, c, COLOR_CHARACTER) == -1) {
+        print_error("vclcd_insert: _vclcd_draw_char() failed.\n");
+        return -1;
+    }
+    
+    vclcd->chars[vclcd->curs_pos] = c;
     
     return 0;
-
 }
 
 int vclcd_delete(struct vclcd *vclcd) {
