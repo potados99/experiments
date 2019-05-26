@@ -86,5 +86,5 @@ void notify_replace(int c) {
 }
 
 int ask_is_full(int _) {
-    return 1//vclcd_is_full(myvclcd);
+    return 1; //vclcd_is_full(myvclcd);
 }
