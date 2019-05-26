@@ -137,4 +137,9 @@ int vclcd_delete(struct vclcd *vclcd);
  */
 int vclcd_replace(struct vclcd *vclcd, char c);
 
+/**
+ * Print content of vclcd.
+ */
+void vclcd_dump(struct vclcd *vclcd);
+
 #endif /* _VCLCD_H */

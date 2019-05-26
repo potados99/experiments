@@ -292,4 +292,10 @@ int vclcd_replace(struct vclcd *vclcd, char c) {
 
 }
 
-
+void vclcd_dump(struct vclcd *vclcd) {
+    for (int i = 0; i < vclcd->chars_len; ++i) {
+        printf("[%c]", vclcd->chars[i]);
+    }
+    puts("");
+    
+}
