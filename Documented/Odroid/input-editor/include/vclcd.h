@@ -76,7 +76,7 @@ int vclcd_write(struct vclcd *vclcd, char c, uint16_t pixel);
  * Move cursor position.
  * lssek() style. :)
  */
-int vclcd_cursor_seek(struct vclcd *vclcd, int offset, int whence);
+int vclcd_seek(struct vclcd *vclcd, int offset, int whence);
 
 /**
  * Insert a character at cursor position and shift right.

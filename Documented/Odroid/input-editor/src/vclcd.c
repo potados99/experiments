@@ -162,7 +162,7 @@ int vclcd_write(struct vclcd *vclcd, char c, uint16_t pixel) {
 }
 
 
-int vclcd_cursor_seek(struct vclcd *vclcd, int offset, int whence) {
+int vclcd_seek(struct vclcd *vclcd, int offset, int whence) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_cursor_seek: vclcd is null.\n"); return -1);
 
     int result;
