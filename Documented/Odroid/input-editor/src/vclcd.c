@@ -102,8 +102,8 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
              print_error("_vclcd_shift: start out of range.\n"); return -1);
     ASSERTDO((start + length >= 0 && start + length < VCLCD_ROWS * VCLCD_COLS),
              print_error("_vclcd_shift: start + length out of range.\n"); return -1);
-    //ASSERTDO((start + offset >= 0 && start + length + offset < VCLCD_ROWS * VCLCD_COLS),
-             //print_error("_vclcd_shift: offset too big.\n"); return -1);
+    ASSERTDO((start + offset >= 0 && start + length + offset < VCLCD_ROWS * VCLCD_COLS),
+             print_error("_vclcd_shift: offset too big.\n"); return -1);
 
     if (length == 0) return 0;
     if (offset == 0) return 0;
