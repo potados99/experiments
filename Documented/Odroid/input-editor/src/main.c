@@ -10,6 +10,9 @@
 #include "verbose.h"
 #include "machine_specific.h"
 
+/**
+ * Modules.
+ */
 struct keypad *mykeypad;
 struct vclcd *myvclcd;
 struct editor *myeditor;
@@ -24,6 +27,9 @@ void notify_delete(int _);
 void notify_replace(int c);
 int  ask_is_full(int _);
 
+/**
+ * Main.
+ */
 int main(int argc, const char * argv[]) {
 	setup();
 
@@ -34,6 +40,9 @@ int main(int argc, const char * argv[]) {
 	return 0;
 }
 
+/**
+ * Initial.
+ */
 void setup() {
 	print_info("start\n");
 	
@@ -58,6 +67,9 @@ void setup() {
     editor_add_callbacks(myeditor, callbacks);
 }
 
+/**
+ * Infinite loop.
+ */
 void loop() {
 	keypad_loop(mykeypad);
 }
