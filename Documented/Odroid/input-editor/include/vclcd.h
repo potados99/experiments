@@ -24,26 +24,87 @@
 #include <stdint.h>
 
 struct vclcd {
-    bool        initialized;
+    bool                                    initialized;
     
-    int         fd;
-    uint16_t    *mem;
+    int                                     fd;
+    uint16_t                                *mem;
     
-    char        chars[VCLCD_ROWS * VCLCD_COLS];
-    int         chars_len;
-    int         curs_pos;
+    char                                    chars[VCLCD_ROWS * VCLCD_COLS];
+    int                                     chars_len;
+    int                                     curs_pos;
 };
 
 /**
  * 24bit to 16bit.
  */
-#define PIXEL(R, G, B)      ((uint16_t)(((R >> 3) << 11) | ((G >> 2) << 5) | (B >> 3)))
+#define PIXEL(R, G, B)                      ((uint16_t)(((R >> 3) << 11) | ((G >> 2) << 5) | (B >> 3)))
 
 /**
  * Presets.
  */
-#define PIXEL_BLACK         PIXEL(0, 0, 0)
-#define PIXEL_WHITE         PIXEL(0xff, 0xff, 0xff)
+#define PIXEL_BLACK                         PIXEL(0x00, 0x00, 0x00)
+#define PIXEL_WHITE                         PIXEL(0xff, 0xff, 0xff)
+#define PIXEL_LIGHTGRAY                     PIXEL(0x8f, 0x8f, 0x8f)
+#define PIXEL_DARKGRAY                      PIXEL(0x30, 0x30, 0x30)
+
+/**
+ * Colors.
+ */
+#define COLOR_BACKGROUND                    PIXEL_WHITE
+#define COLOR_OUTSIDE                       PIXEL_BLACK
+#define COLOR_NONE                          COLOR_BACKGROUND
+#define COLOR_CHARACTER                     PIXEL_BLACK
+#define COLOR_CURSOR                        PIXEL_DARKGRAY
+
+/**
+ * not all area of the LCD is used.
+ * 10 * 8 characters are aligned center horizontally.
+ * the left and right margin is 22 ( same as (320 - ((240 * 10) + (4 * 9))) / 2 )
+ */
+#define MARGIN                              22
+#define ROW_INDEX(INDEX)                    (INDEX / VCLCD_COLS)
+#define COL_INDEX(INDEX)                    (INDEX % VCLCD_COLS)
+#define OFFSET_VERTICAL(AMOUNT)             ((VCLCD_WIDTH) * (AMOUNT))
+#define OFFSET_HORIZONTAL(AMOUNT)           (AMOUNT)
+
+
+/********************************************************************************
+ * Internal functions.
+ ********************************************************************************/
+
+/**
+ * Clear all pixel.
+ * @param pixel_center  specifies color to be filled in whole character area.
+ * @param pixel_side    specifies color for others area without characters.
+ */
+int _vclcd_clear(struct vclcd *vclcd, uint16_t pixel_center, uint16_t pixel_side);
+
+/**
+ * Read and return a character at position.
+ */
+int _vclcd_read(struct vclcd *vclcd, int at);
+
+/**
+ * Write a character at position.
+ */
+int _vclcd_write(struct vclcd *vclcd, int at, char c, uint16_t pixel);
+
+/**
+ * Draw a cursor at current cursor position.
+ */
+int _vclcd_draw_cursor(struct vclcd *vclcd, int at, uint16_t pixel);
+
+/**
+ * Shift characters.
+ * Shift left will remove character, and right will add [space] character.
+ * Cursor will move only when its position is impossible after shift.
+ */
+int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset);
+
+
+/********************************************************************************
+ * Public functions.
+ ********************************************************************************/
 
 /**
  * Initial works
@@ -54,28 +115,6 @@ int vclcd_setup(struct vclcd *vclcd, const char *dev_path);
  * Close connection to LCD.
  */
 int vclcd_close(struct vclcd *vclcd);
-
-/**
- * Clear all pixel.
- * @param pixel_center  specifies color to be filled in whole character area.
- * @param pixel_side    specifies color for others area without characters.
- */
-int vclcd_clear(struct vclcd *vclcd, uint16_t pixel_center, uint16_t pixel_side);
-
-/**
- * Read and return a character at cursor position of vclcd.
- */
-int vclcd_read(struct vclcd *vclcd);
-
-/**
- * Write a character to current cursor position of vclcd.
- */
-int vclcd_write(struct vclcd *vclcd, char c, uint16_t pixel);
-
-/**
- * Draw a cursor at current cursor position.
- */
-int vclcd_draw_cursor(struct vclcd *vclcd, uint16_t pixel);
 
 /**
  * Move cursor position.
