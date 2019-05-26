@@ -264,13 +264,19 @@ int vclcd_seek(struct vclcd *vclcd, int offset, int whence) {
     return (vclcd->curs_pos = result);
 }
 
+/* Tested 190526 */
 int vclcd_insert(struct vclcd *vclcd, char c) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_insert: vclcd is null.\n"); return -1);
-
-    int cursor_at_right_of_last_char = (vclcd->curs_pos == vclcd->chars_len);
+    ASSERTDO((font_index(c) != -1), print_error("vclcd_insert: invalid character: [%c].\n", c); return -1);
     
-    if (!cursor_at_right_of_last_char) {
-        _vclcd_shift(vclcd, vclcd->curs_pos, vclcd->chars_len - vclcd->curs_pos, 1);
+    int cursor_on_char = (vclcd->curs_pos < vclcd->chars_len);
+    int shift_needed = cursor_on_char;
+    
+    if (shift_needed) {
+        if (_vclcd_shift(vclcd, vclcd->curs_pos, vclcd->chars_len - vclcd->curs_pos, 1) == -1) {
+            print_error("vclcd_insert: _vclcd_shift() failed.\n");
+            return -1;
+        }
     }
     
     if (_vclcd_draw_char(vclcd, vclcd->curs_pos, c, COLOR_CHARACTER) == -1) {
@@ -278,7 +284,12 @@ int vclcd_insert(struct vclcd *vclcd, char c) {
         return -1;
     }
     
-    if (cursor_at_right_of_last_char) {
+    if (!shift_needed) {
+        /**
+         * _vclcd_shift() increases char_len.
+         * In case cursor is right after the last character, where shift does not happen,
+         * we have to increase chars_len here.
+         */
         vclcd->chars_len += 1;
     }
     
@@ -287,16 +298,60 @@ int vclcd_insert(struct vclcd *vclcd, char c) {
     return 0;
 }
 
+/* */
 int vclcd_delete(struct vclcd *vclcd) {
-    return 0;
+    ASSERTDO((vclcd != NULL), print_error("vclcd_delete: vclcd is null.\n"); return -1);
 
+    int cursor_on_char = (vclcd->curs_pos < vclcd->chars_len);
+    if (!cursor_on_char) return 0; /* nothing to delete. */
+    
+    int cursor_on_last_char = (vclcd->curs_pos + 1 == vclcd->chars_len);
+    if (cursor_on_last_char) {
+        /**
+         * _vclcd_shift() removes data and redraw characters.
+         * But without it we have to do it manually.
+         */
+        
+        /* remove pixels. */
+        if (_vclcd_draw_char(vclcd, vclcd->curs_pos, vclcd->chars[vclcd->curs_pos], COLOR_NONE) == -1) {
+            print_error("vclcd_delete: _vclcd_draw_char() failed.\n");
+            return -1;
+        }
+        
+        /* remove data. */
+        vclcd->chars[vclcd->curs_pos] = '\0';
+    }
+    else {
+        if (_vclcd_shift(vclcd, vclcd->curs_pos + 1, vclcd->chars_len - 1 - vclcd->curs_pos, -1) == -1) {
+            print_error("vclcd_delete: _vclcd_shift() failed.\n");
+            return -1;
+        }
+    }
+    
+    return 0;
 }
 
+/* */
 int vclcd_replace(struct vclcd *vclcd, char c) {
-    return 0;
+    ASSERTDO((vclcd != NULL), print_error("vclcd_replace: vclcd is null.\n"); return -1);
+    ASSERTDO((font_index(c) != -1), print_error("vclcd_replace: invalid character: [%c].\n", c); return -1);
 
+    if (_vclcd_draw_char(vclcd, vclcd->curs_pos, vclcd->chars[vclcd->curs_pos], COLOR_NONE) == -1) {
+        print_error("vclcd_delete: _vclcd_draw_char() failed. clear failed.\n");
+        return -1;
+    }
+    
+    vclcd->chars[vclcd->curs_pos] = c;
+    
+    if (_vclcd_draw_char(vclcd, vclcd->curs_pos, vclcd->chars[vclcd->curs_pos], COLOR_NONE) == -1) {
+        print_error("vclcd_delete: _vclcd_draw_char() failed. redraw failed.\n");
+        return -1;
+    }
+    
+    return 0;
 }
 
+/* Tested 190526 */
 void vclcd_dump(struct vclcd *vclcd) {
     for (int i = 0; i < vclcd->chars_len; ++i) {
         printf("[%c]", vclcd->chars[i]);
