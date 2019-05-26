@@ -269,6 +269,8 @@ int vclcd_insert(struct vclcd *vclcd, char c) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_insert: vclcd is null.\n"); return -1);
     ASSERTDO((font_index(c) != -1), print_error("vclcd_insert: invalid character: [%c].\n", c); return -1);
     
+    ASSERTDO((vclcd->chars_len < VCLCD_ROWS * VCLCD_COLS), print_error("vclcd_insert: no more space!\n"); return -1);
+    
     int cursor_on_char = (vclcd->curs_pos < vclcd->chars_len);
     int shift_needed = cursor_on_char;
     
