@@ -69,7 +69,7 @@ struct vclcd {
 
 
 /********************************************************************************
- * Internal functions.
+ * Internal functions. 
  ********************************************************************************/
 
 /**
@@ -80,14 +80,9 @@ struct vclcd {
 int _vclcd_clear(struct vclcd *vclcd, uint16_t pixel_center, uint16_t pixel_side);
 
 /**
- * Read and return a character at position.
- */
-int _vclcd_read(struct vclcd *vclcd, int at);
-
-/**
  * Write a character at position.
  */
-int _vclcd_write(struct vclcd *vclcd, int at, char c, uint16_t pixel);
+int _vclcd_draw_char(struct vclcd *vclcd, int at, char c, uint16_t pixel);
 
 /**
  * Draw a cursor at current cursor position.

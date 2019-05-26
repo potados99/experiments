@@ -49,14 +49,8 @@ int _vclcd_clear(struct vclcd *vclcd, uint16_t pixel_center, uint16_t pixel_side
     return 0;
 }
 
-int _vclcd_read(struct vclcd *vclcd, int at) {
-    ASSERTDO((vclcd != NULL), print_error("_vclcd_read: vclcd is null.\n"); return -1);
-    
-    return vclcd->chars[at];
-}
-
 /* Tested 190526 */
-int _vclcd_write(struct vclcd *vclcd, int at, char c, uint16_t pixel) {
+int _vclcd_draw_char(struct vclcd *vclcd, int at, char c, uint16_t pixel) {
     ASSERTDO((vclcd != NULL), print_error("_vclcd_write: vclcd is null.\n"); return -1);
     
     int idx = font_index(c);
@@ -84,8 +78,6 @@ int _vclcd_write(struct vclcd *vclcd, int at, char c, uint16_t pixel) {
         pixel_pos += OFFSET_VERTICAL(1);
     }
 
-    vclcd->chars[vclcd->curs_pos] = c;
-
     return 0;
 }
 
@@ -110,8 +102,8 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
              print_error("_vclcd_shift: start out of range.\n"); return -1);
     ASSERTDO((start + length >= 0 && start + length < VCLCD_ROWS * VCLCD_COLS),
              print_error("_vclcd_shift: start + length out of range.\n"); return -1);
-    ASSERTDO((start + offset >= 0 && start + length + offset < VCLCD_ROWS * VCLCD_COLS),
-             print_error("_vclcd_shift: offset too big.\n"); return -1);
+    //ASSERTDO((start + offset >= 0 && start + length + offset < VCLCD_ROWS * VCLCD_COLS),
+             //print_error("_vclcd_shift: offset too big.\n"); return -1);
 
     if (length == 0) return 0;
     if (offset == 0) return 0;
@@ -136,11 +128,13 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
     }
     else if (offset < 0) {
         affected_start = start + offset;
+        if (affected_start < 0) affected_start = 0;
+        
         affected_end = start + length - 1;
     }
 
     for (int i = affected_start; i <= affected_end; ++i) {
-        _vclcd_write(vclcd, i, vclcd->chars[i], COLOR_NONE);
+        _vclcd_draw_char(vclcd, i, vclcd->chars[i], COLOR_NONE);
     }
     
     usleep(1000000);
@@ -170,7 +164,8 @@ int _vclcd_shift(struct vclcd *vclcd, int start, int length, int offset) {
      **********/
 
     for (int i = affected_start; i <= affected_end; ++i) {
-        _vclcd_write(vclcd, i, vclcd->chars[i], COLOR_CHARACTER);
+        if (vclcd->chars[i]) /* draw only non-null char. */
+            _vclcd_draw_char(vclcd, i, vclcd->chars[i], COLOR_CHARACTER);
     }
 
     
