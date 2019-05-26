@@ -206,8 +206,13 @@ int vclcd_seek(struct vclcd *vclcd, int offset, int whence) {
     
     int success_condition = (result >= 0 && result < (VCLCD_CHAR_WIDTH * VCLCD_CHAR_HEIGHT));
     ASSERTDO(success_condition, print_error("vclcd_cursor_seek: position %d exceeds expected range.\n", result); return -1);
+    // ASSERTDO() add cursor location limit.
+    
+    vclcd_draw_cursor(vclcd, PIXEL_WHITE);
+    vclcd->curs_pos = result;
+    vclcd_draw_cursor(vclcd, PIXEL_BLACK);
 
-    return (vclcd->curs_pos = result);
+    return result;
 }
 
 
