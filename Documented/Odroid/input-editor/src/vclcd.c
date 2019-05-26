@@ -403,7 +403,7 @@ int vclcd_is_full(struct vclcd *vclcd) {
 
 /* Tested 190526 */
 void vclcd_dump(struct vclcd *vclcd) {
-    ASSERTDO((vclcd != NULL), print_error("vclcd_dump: vclcd is null.\n"); return -1);
+    ASSERTDO((vclcd != NULL), print_error("vclcd_dump: vclcd is null.\n"); return);
 
     for (int i = 0; i < vclcd->chars_len; ++i) {
         printf("[%c]", vclcd->chars[i]);
