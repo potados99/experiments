@@ -24,7 +24,8 @@ struct editor {
     bool initialized;
     
     bool typing;
-    char last_typed;
+    char last_char;
+    int last_key;
     
     struct editor_callbacks callbacks;
 };
@@ -120,6 +121,11 @@ static inline int launch_callback(editor_callback callback, int param) {
     return 0;
 }
 
+
+/********************************************************************************
+ * Internal functions.
+ ********************************************************************************/
+
 /**
  * Callback launchers
  */
@@ -127,6 +133,11 @@ int _editor_on_cursor_move(struct editor *editor, int delta);
 int _editor_on_insert(struct editor *editor, char c);
 int _editor_on_delete(struct editor *editor);
 int _editor_on_replace(struct editor *editor, char c);
+
+
+/********************************************************************************
+ * Public functions.
+ ********************************************************************************/
 
 /**
  * Initial setup.
@@ -141,6 +152,6 @@ int editor_add_callbacks(struct editor *editor, struct editor_callbacks callback
 /**
  * Do action given the index of the key pressed.
  */
-int editor_input(int key_index);
+int editor_input(struct editor *editor, int key_index);
 
 #endif /* _EDITOR_H */
