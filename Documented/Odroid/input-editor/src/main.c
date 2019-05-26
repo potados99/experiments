@@ -39,7 +39,7 @@ void setup() {
      * Test code
      */
     vclcd_setup(myvclcd, "/dev/fb2");
-    vclcd_clear(myvclcd, PIXEL_WHITE, PIXEL_BLACK);
+
     vclcd_write(myvclcd, 'a', PIXEL_BLACK);
     vclcd_seek(myvclcd, 1, SEEK_CUR);
     vclcd_write(myvclcd, 'b', PIXEL(0xff, 0, 0));
