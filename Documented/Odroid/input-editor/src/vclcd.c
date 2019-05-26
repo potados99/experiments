@@ -142,10 +142,9 @@ int vclcd_write(struct vclcd *vclcd, char c, uint16_t pixel) {
     ASSERTDO((idx != -1), print_error("vclcd_write: attempting to write wrong character.\n"); return -1);
 
 
-    int                     init_pos = vclcd_offset(vclcd->curs_pos);
     const unsigned int      *font_rows = *(font + idx);
+    int                     pixel_pos = vclcd_offset(vclcd->curs_pos);
     
-    int                     pixel_pos = init_pos;
     int                     cur_row;
     uint16_t                *address;
     
