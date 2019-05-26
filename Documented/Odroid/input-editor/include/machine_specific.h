@@ -4,13 +4,13 @@
 /**
   * Keypad connection.
   */
-#define KEYPAD_0	13	/* R1 */
-#define KEYPAD_1	14	/* R2 */
-#define KEYPAD_2	6	/* R3 */
-#define KEYPAD_3	10	/* R4 */
-#define KEYPAD_4	21	/* C1 */
-#define KEYPAD_5	22	/* C2 */
-#define KEYPAD_6	23	/* C3 */
+#define KEYPAD_0	4	/* R1 */
+#define KEYPAD_1	5	/* R2 */
+#define KEYPAD_2	21	/* R3 */
+#define KEYPAD_3	22	/* R4 */
+#define KEYPAD_4	26	/* C1 */
+#define KEYPAD_5	23	/* C2 */
+#define KEYPAD_6	27	/* C3 */
 #define KEYPAD_7	24	/* C4 */
 
 /**
