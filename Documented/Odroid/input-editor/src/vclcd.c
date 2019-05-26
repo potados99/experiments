@@ -379,7 +379,7 @@ int vclcd_replace(struct vclcd *vclcd, char c) {
     /****************************************
      * Graphic
      ****************************************/
-    if (_vclcd_draw_char(vclcd, vclcd->curs_pos, vclcd->chars[vclcd->curs_pos], COLOR_NONE) == -1) {
+    if (_vclcd_draw_char(vclcd, vclcd->curs_pos, vclcd->chars[vclcd->curs_pos], COLOR_CHARACTER) == -1) {
         print_error("vclcd_delete: _vclcd_draw_char() failed. redraw failed.\n");
         return -1;
     }
