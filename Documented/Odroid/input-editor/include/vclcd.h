@@ -34,6 +34,17 @@ struct vclcd {
 };
 
 /**
+ * 24bit to 16bit.
+ */
+#define PIXEL(R, G, B)      ((uint16_t)(((R >> 3) << 11) | ((G >> 2) << 5) | (B >> 3)))
+
+/**
+ * Presets.
+ */
+#define PIXEL_BLACK         PIXEL(0, 0, 0)
+#define PIXEL_WHITE         PIXEL(0xff, 0xff, 0xff)
+
+/**
  * Initial works
  */
 int vclcd_setup(struct vclcd *vclcd, const char *dev_path);
@@ -44,9 +55,11 @@ int vclcd_setup(struct vclcd *vclcd, const char *dev_path);
 int vclcd_close(struct vclcd *vclcd);
 
 /**
- * Clear all pixel to @pixel.
+ * Clear all pixel.
+ * @param pixel_center  specifies color to be filled in whole character area.
+ * @param pixel_side    specifies color for others area without characters.
  */
-void vclcd_clear(struct vclcd *vclcd, uint16_t pixel);
+int vclcd_clear(struct vclcd *vclcd, uint16_t pixel_center, uint16_t pixel_side);
 
 /**
  * Read and return a character at cursor position of vclcd.
@@ -56,17 +69,14 @@ int vclcd_read(struct vclcd *vclcd);
 /**
  * Write a character to current cursor position of vclcd.
  */
-int vclcd_write(struct vclcd *vclcd, char c);
+int vclcd_write(struct vclcd *vclcd, char c, uint16_t pixel);
+
 
 /**
- * Move cursor position of clcd.
+ * Move cursor position.
+ * lssek() style. :)
  */
-int vclcd_cursor_move(struct vclcd *vclcd, int delta);
-
-/**
- * Set cursor position of clcd.
- */
-int vclcd_cursor_set(struct vclcd *vclcd, int offset);
+int vclcd_cursor_seek(struct vclcd *vclcd, int offset, int whence);
 
 /**
  * Insert a character at cursor position and shift right.
@@ -76,7 +86,7 @@ int vclcd_insert(struct vclcd *vclcd, char c);
 /**
  * Remove a character at cursor position and shift left.
  */
-int vclcd_remove(struct vclcd *vclcd);
+int vclcd_delete(struct vclcd *vclcd);
 
 /**
  * Replace a character at cursor position.

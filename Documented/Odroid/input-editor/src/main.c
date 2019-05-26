@@ -36,8 +36,8 @@ void setup() {
 	keypad_set_listener(mykeypad, on_key_pressed);
     
     vclcd_setup(myvclcd, "/dev/fb2");
-    vclcd_clear(myvclcd, 0xFFFF);
-    vclcd_write(myvclcd, 'a');
+    vclcd_clear(myvclcd, PIXEL_WHITE, PIXEL_BLACK);
+    vclcd_write(myvclcd, 'a', PIXEL_BLACK);
 }
 
 void loop() {

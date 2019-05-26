@@ -106,12 +106,23 @@ int vclcd_close(struct vclcd *vclcd) {
     return 0;
 }
 
-void vclcd_clear(struct vclcd *vclcd, uint16_t pixel) {
-    ASSERTDO((vclcd != NULL), print_error("vclcd_clear: vclcd is null.\n"); return);
+int vclcd_clear(struct vclcd *vclcd, uint16_t pixel_center, uint16_t pixel_side) {
+    ASSERTDO((vclcd != NULL), print_error("vclcd_clear: vclcd is null.\n"); return -1);
 
+    int         col_index = 0;
+    uint16_t    pixel = pixel_side;
+    
     for (int i = 0; i < VCLCD_WIDTH * VCLCD_HEIGHT; ++i) {
+        if      (col_index == 0)                       pixel = pixel_side;
+        else if (col_index == MARGIN)                  pixel = pixel_center;
+        else if (col_index == VCLCD_WIDTH - MARGIN)    pixel = pixel_side;
+            
         *(vclcd->mem + i) = pixel;
+        
+        if (++col_index == VCLCD_WIDTH) col_index = 0;
     }
+    
+    return 0;
 }
 
 int vclcd_read(struct vclcd *vclcd) {
@@ -120,7 +131,7 @@ int vclcd_read(struct vclcd *vclcd) {
     return vclcd->chars[vclcd->curs_pos];
 }
 
-int vclcd_write(struct vclcd *vclcd, char c) {
+int vclcd_write(struct vclcd *vclcd, char c, uint16_t pixel) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_write: vclcd is null.\n"); return -1);
     
     int idx;
@@ -138,7 +149,7 @@ int vclcd_write(struct vclcd *vclcd, char c) {
 
         for (int col = 0; col < VCLCD_CHAR_WIDTH; ++col) {
             if ((font_row & 0x01)) {
-                *(vclcd->mem + pixel_pos + VCLCD_CHAR_WIDTH - 1 - col) = 0;
+                *(vclcd->mem + pixel_pos + VCLCD_CHAR_WIDTH - 1 - col) = pixel;
             }
 
             font_row >>= 1;
@@ -150,15 +161,28 @@ int vclcd_write(struct vclcd *vclcd, char c) {
     return 0;
 }
 
-int vclcd_cursor_move(struct vclcd *vclcd, int delta) {
-    return 0;
 
-}
+int vclcd_cursor_seek(struct vclcd *vclcd, int offset, int whence) {
+    ASSERTDO((vclcd != NULL), print_error("vclcd_cursor_seek: vclcd is null.\n"); return -1);
 
-int vclcd_cursor_set(struct vclcd *vclcd, int offset) {
-    return 0;
-
+    int result;
+    switch (whence) {
+        case SEEK_CUR:
+            result = vclcd->curs_pos + offset;
+            break;
+            
+        case SEEK_SET:
+            result = offset;
+            break;
+            
+        default:
+            print_error("vclcd_cursor_seek: only SEEK_CUR and SEEK_SET are allowed.\n");
+            return -1;
+    }
     
+    ASSERTDO((result < 0 || result > (VCLCD_CHAR_WIDTH * VCLCD_CHAR_HEIGHT)), print_error("vclcd_cursor_seek: position %d exceeds expected range.\n", result); return -1);
+
+    return (vclcd->curs_pos = result);
 }
 
 int vclcd_insert(struct vclcd *vclcd, char c) {
@@ -166,7 +190,7 @@ int vclcd_insert(struct vclcd *vclcd, char c) {
 
 }
 
-int vclcd_remove(struct vclcd *vclcd) {
+int vclcd_delete(struct vclcd *vclcd) {
     return 0;
 
 }
