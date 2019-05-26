@@ -320,8 +320,12 @@ int vclcd_delete(struct vclcd *vclcd) {
 
     int cursor_on_char = (vclcd->curs_pos < vclcd->chars_len);
     if (!cursor_on_char) {
+        /**
+         * Hahahahahahahahahhahahahahahahahah!!!
+         */
         static bool black = true;
         _vclcd_clear(vclcd, COLOR_BACKGROUND, black ? PIXEL_BLACK : PIXEL_WHITE);
+        _vclcd_draw_cursor(vclcd, 0, COLOR_CURSOR);
         black = !black;
         
         return 0; /* nothing to delete. */
