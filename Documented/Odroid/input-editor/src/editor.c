@@ -102,6 +102,10 @@ int editor_input(struct editor *editor, int key_index) {
          * Pushing the same alphabet key for >= two times.
          */
         c = next_char(editor->last_char);
+        if (c == -1) {
+            print_error("editor_input: next char not exist. wrong character %c.\n", editor->last_char);
+            return -1;
+        }
         
         _editor_on_replace(editor, c);
         
@@ -112,6 +116,8 @@ int editor_input(struct editor *editor, int key_index) {
          * New alphabet key is pushed.
          */
         _editor_on_insert(editor, head_char);
+        
+        editor->last_char = head_char;
     }
     else {
         /**

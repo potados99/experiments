@@ -70,13 +70,17 @@ void on_key_pressed(int key_index) {
 
 void notify_cursor_move(int delta) {
     print_info("[cursor move %s.]\n", delta > 0 ? "right" : "left");
+    vclcd_seek(myvclcd, delta, SEEK_CUR);
 }
 void notify_insert(int c) {
     print_info("[insert %c.]\n", c);
+    vclcd_insert(myvclcd, c);
 }
 void notify_delete(int _) {
     print_info("[delete character.]\n");
+    vclcd_delete(myvclcd);
 }
 void notify_replace(int c) {
     print_info("[replace with %c.]\n", c);
+    vclcd_replace(myvclcd, c);
 }
