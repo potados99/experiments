@@ -38,7 +38,8 @@
 #define OFFSET_HORIZONTAL(AMOUNT)           (AMOUNT)
 
 /**
- * get address of top left point of the character area cur_pos is at.
+ * Get address of top left point of the character area cur_pos is at.
+ * Tested 190526
  */
 static inline int vclcd_offset(int cur_pos) {
     return  OFFSET_VERTICAL( (VCLCD_CHAR_HEIGHT + VCLCD_CHAR_PADDING) * ROW_INDEX(cur_pos) ) +
@@ -47,12 +48,13 @@ static inline int vclcd_offset(int cur_pos) {
 }
 
 /**
- * get address of bottom left point of the character area cur_pos is at.
+ * Get address of bottom left point of the character area cur_pos is at.
  */
 static inline int vclcd_offset_cursor(int cur_pos) {
     return vclcd_offset(cur_pos) + OFFSET_VERTICAL(VCLCD_CHAR_HEIGHT);
 }
 
+/* Tested 190526 */
 int vclcd_setup(struct vclcd *vclcd, const char *dev_path) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_setup: vclcd is null.\n"); return -1);
     
@@ -106,7 +108,7 @@ int vclcd_close(struct vclcd *vclcd) {
     return 0;
 }
 
-/* Test success 190526 */
+/* Tested 190526 */
 int vclcd_clear(struct vclcd *vclcd, uint16_t pixel_center, uint16_t pixel_side) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_clear: vclcd is null.\n"); return -1);
 
@@ -132,30 +134,34 @@ int vclcd_read(struct vclcd *vclcd) {
     return vclcd->chars[vclcd->curs_pos];
 }
 
-/* Test success 190526 */
+/* Tested 190526 */
 int vclcd_write(struct vclcd *vclcd, char c, uint16_t pixel) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_write: vclcd is null.\n"); return -1);
     
-    int idx;
-    if ((idx = font_index(c)) == -1) {
-        print_error("vclcd_write: attempting to write wrong character.\n");
-    }
+    int idx = font_index(c);
+    ASSERTDO((idx != -1), print_error("vclcd_write: attempting to write wrong character.\n"); return -1);
 
-    int font_row;
-    int pixel_pos;
 
+    int                     init_pos = vclcd_offset(vclcd->curs_pos);
+    const unsigned int      *font_rows = *(font + idx);
+    
+    int                     pixel_pos = init_pos;
+    int                     cur_row;
+    uint16_t                *address;
+    
     for (int row = 0; row < VCLCD_CHAR_HEIGHT; ++row) {
+        cur_row = *font_rows++;
 
-        font_row = font[idx][row];
-        pixel_pos = vclcd_offset(vclcd->curs_pos) + OFFSET_VERTICAL(row);
-
+        address = vclcd->mem + pixel_pos + VCLCD_CHAR_WIDTH - 1;
         for (int col = 0; col < VCLCD_CHAR_WIDTH; ++col) {
-            if ((font_row & 0x01)) {
-                *(vclcd->mem + pixel_pos + VCLCD_CHAR_WIDTH - 1 - col) = pixel;
+            if ((cur_row & 0x01)) {
+                *address-- = pixel;
             }
 
-            font_row >>= 1;
+            cur_row >>= 1;
         }
+        
+        pixel_pos += VCLCD_WIDTH;
     }
 
     vclcd->chars[vclcd->curs_pos] = c;
@@ -163,6 +169,7 @@ int vclcd_write(struct vclcd *vclcd, char c, uint16_t pixel) {
     return 0;
 }
 
+/* Tested 190526 */
 int vclcd_seek(struct vclcd *vclcd, int offset, int whence) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_cursor_seek: vclcd is null.\n"); return -1);
 
@@ -185,6 +192,7 @@ int vclcd_seek(struct vclcd *vclcd, int offset, int whence) {
 
     return (vclcd->curs_pos = result);
 }
+
 
 int vclcd_insert(struct vclcd *vclcd, char c) {
     return 0;
