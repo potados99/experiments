@@ -100,10 +100,12 @@ int editor_input(struct editor *editor, int key_index) {
             return -1;
     }
     
-    if (editor->last_key == key_index && editor->typing && !_editor_is_vclcd_full(editor)) {
+    if (editor->last_key == key_index && editor->typing) {
         /**
          * Pushing the same alphabet key for >= two times.
          */
+        if (_editor_is_vclcd_full(editor)) return 0;
+        
         c = next_char(editor->last_char);
         if (c == -1) {
             print_error("editor_input: next char not exist. wrong character %c.\n", editor->last_char);
@@ -114,10 +116,12 @@ int editor_input(struct editor *editor, int key_index) {
         
         editor->last_char = c;
     }
-    else if (editor->typing && !_editor_is_vclcd_full(editor)) {
+    else if (editor->typing) {
         /**
          * New alphabet key is pushed.
          */
+        if (_editor_is_vclcd_full(editor)) return 0;
+
         _editor_on_insert(editor, head_char);
         
         editor->last_char = head_char;

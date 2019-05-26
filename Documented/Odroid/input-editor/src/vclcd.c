@@ -402,7 +402,7 @@ int vclcd_replace(struct vclcd *vclcd, char c) {
 int vclcd_is_full(struct vclcd *vclcd) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_is_full: vclcd is null.\n"); return -1);
 
-    return (vclcd->chars_len >=  VCLCD_ROWS * VCLCD_COLS);
+    return (vclcd->chars_len >= VCLCD_ROWS * VCLCD_COLS);
 }
 
 /* Tested 190526 */
