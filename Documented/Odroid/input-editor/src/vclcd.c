@@ -320,6 +320,7 @@ int vclcd_delete(struct vclcd *vclcd) {
         
         /* remove data. */
         vclcd->chars[vclcd->curs_pos] = '\0';
+        vclcd->chars_len -= 1;
     }
     else {
         if (_vclcd_shift(vclcd, vclcd->curs_pos + 1, vclcd->chars_len - 1 - vclcd->curs_pos, -1) == -1) {

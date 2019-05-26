@@ -82,33 +82,77 @@ void setup() {
 
     vclcd_insert(myvclcd, 'a');
     vclcd_seek(myvclcd, 1, SEEK_CUR);
+    vclcd_dump(myvclcd);
     
     fgetc(stdin);
     
     vclcd_insert(myvclcd, 'b');
     vclcd_seek(myvclcd, 1, SEEK_CUR);
+    vclcd_dump(myvclcd);
     
     fgetc(stdin);
     
     vclcd_insert(myvclcd, 'c');
+    vclcd_seek(myvclcd, 1, SEEK_CUR);
+    vclcd_dump(myvclcd);
     
     fgetc(stdin);
     
     vclcd_insert(myvclcd, 'd');
+    vclcd_dump(myvclcd);
     
     fgetc(stdin);
     
     vclcd_insert(myvclcd, 'e');
-    vclcd_seek(myvclcd, 1, SEEK_CUR);
+    vclcd_dump(myvclcd);
     
     fgetc(stdin);
     
     vclcd_insert(myvclcd, 'f');
-    vclcd_seek(myvclcd, 1, SEEK_CUR);
+    vclcd_dump(myvclcd);
     
     fgetc(stdin);
+
+   vclcd_delete(myvclcd);
+    vclcd_dump(myvclcd);
+
+    fgetc(stdin);
+
+   vclcd_delete(myvclcd);
+    vclcd_dump(myvclcd);
+
+    fgetc(stdin);
+
+   vclcd_delete(myvclcd);
+    vclcd_dump(myvclcd);
+
+    fgetc(stdin);
+
+   vclcd_delete(myvclcd);
+    vclcd_dump(myvclcd);
+
+    fgetc(stdin);
     
+   vclcd_delete(myvclcd);
+    vclcd_dump(myvclcd);
+
+    fgetc(stdin);
     
+   vclcd_delete(myvclcd);
+    vclcd_dump(myvclcd);
+
+    fgetc(stdin);
+
+   vclcd_delete(myvclcd);
+    vclcd_dump(myvclcd);
+
+    fgetc(stdin);
+
+   vclcd_delete(myvclcd);
+    vclcd_dump(myvclcd);
+
+    fgetc(stdin);
+
 
     /**
      * Test code done
