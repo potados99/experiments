@@ -207,12 +207,10 @@ int vclcd_seek(struct vclcd *vclcd, int offset, int whence) {
              print_info("vclcd_cursor_seek: cursor at the end of string. cannot go further.\n");
              return vclcd->curs_pos);
     
-    vclcd->curs_pos = result;
-    
     _vclcd_draw_cursor(vclcd, vclcd->curs_pos, PIXEL_WHITE); /* remove cursor. */
     _vclcd_draw_cursor(vclcd, result, PIXEL_BLACK); /* redraw cursor. */
 
-    return result;
+    return (vclcd->curs_pos = result);
 }
 
 /* Tested 190526 */
