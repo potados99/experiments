@@ -319,8 +319,13 @@ int vclcd_delete(struct vclcd *vclcd) {
     ASSERTDO((vclcd != NULL), print_error("vclcd_delete: vclcd is null.\n"); return -1);
 
     int cursor_on_char = (vclcd->curs_pos < vclcd->chars_len);
-    if (!cursor_on_char) return 0; /* nothing to delete. */
-    
+    if (!cursor_on_char) {
+        static bool black = true;
+        _vclcd_clear(vclcd, COLOR_BACKGROUND, black ? PIXEL_BLACK : PIXEL_WHITE);
+        black = !black;
+        
+        return 0; /* nothing to delete. */
+    }
     int cursor_on_last_char = (vclcd->curs_pos + 1 == vclcd->chars_len);
     if (cursor_on_last_char) {
         /**
@@ -390,7 +395,16 @@ int vclcd_replace(struct vclcd *vclcd, char c) {
 }
 
 /* Tested 190526 */
+int vclcd_is_full(struct vclcd *vclcd) {
+    ASSERTDO((vclcd != NULL), print_error("vclcd_is_full: vclcd is null.\n"); return -1);
+
+    return (vclcd->chars_len >=  VCLCD_ROWS * VCLCD_COLS);
+}
+
+/* Tested 190526 */
 void vclcd_dump(struct vclcd *vclcd) {
+    ASSERTDO((vclcd != NULL), print_error("vclcd_dump: vclcd is null.\n"); return -1);
+
     for (int i = 0; i < vclcd->chars_len; ++i) {
         printf("[%c]", vclcd->chars[i]);
     }

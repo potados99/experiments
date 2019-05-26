@@ -22,7 +22,7 @@ void notify_cursor_move(int delta);
 void notify_insert(int c);
 void notify_delete(int _);
 void notify_replace(int c);
-
+int  ask_is_full(int _);
 
 int main(int argc, const char * argv[]) {
 	setup();
@@ -52,7 +52,7 @@ void setup() {
     editor_setup(myeditor);
     
     struct editor_callbacks callbacks = {
-      notify_cursor_move, notify_insert, notify_delete, notify_replace
+      notify_cursor_move, notify_insert, notify_delete, notify_replace, ask_is_full
     };
     
     editor_add_callbacks(myeditor, callbacks);
@@ -83,4 +83,8 @@ void notify_delete(int _) {
 void notify_replace(int c) {
     print_info("[replace with %c.]\n", c);
     vclcd_replace(myvclcd, c);
+}
+
+int ask_is_full(int _) {
+    return vclcd_is_full(myvclcd);
 }

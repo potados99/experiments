@@ -12,12 +12,15 @@
 #include <stdbool.h>
 
 typedef void (*editor_callback)(int);
+typedef int (*editor_query)(int);
 
 struct editor_callbacks{
     editor_callback on_cursor_move;
     editor_callback on_insert;
     editor_callback on_delete;
     editor_callback on_replace;
+    
+    editor_query    is_full;
 };
 
 struct editor {
@@ -121,6 +124,15 @@ static inline int launch_callback(editor_callback callback, int param) {
     return 0;
 }
 
+/**
+ * Launch query.
+ */
+static inline int launch_query(editor_query query, int param) {
+    ASSERTDO((query != NULL), print_error("launch_query: callback is null.\n"); return -1);
+
+    return query(param);
+}
+
 
 /********************************************************************************
  * Internal functions.
@@ -133,6 +145,7 @@ int _editor_on_cursor_move(struct editor *editor, int delta);
 int _editor_on_insert(struct editor *editor, char c);
 int _editor_on_delete(struct editor *editor);
 int _editor_on_replace(struct editor *editor, char c);
+int _editor_is_vclcd_full(struct editor *editor);
 
 
 /********************************************************************************

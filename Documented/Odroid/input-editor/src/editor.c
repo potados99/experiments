@@ -31,6 +31,9 @@ int _editor_on_replace(struct editor *editor, char c) {
     return launch_callback(editor->callbacks.on_replace , c);
 }
 
+int _editor_is_vclcd_full(struct editor *editor) {
+    return launch_query(editor->callbacks.is_full, 0);
+}
 
 int editor_setup(struct editor *editor) {
     ASSERTDO((editor != NULL), print_error("editor_setup: editor is null.\n"); return -1);
@@ -97,7 +100,7 @@ int editor_input(struct editor *editor, int key_index) {
             return -1;
     }
     
-    if (editor->last_key == key_index && editor->typing) {
+    if (editor->last_key == key_index && editor->typing && !_editor_is_vclcd_full(editor)) {
         /**
          * Pushing the same alphabet key for >= two times.
          */
@@ -111,7 +114,7 @@ int editor_input(struct editor *editor, int key_index) {
         
         editor->last_char = c;
     }
-    else if (editor->typing) {
+    else if (editor->typing && !_editor_is_vclcd_full(editor)) {
         /**
          * New alphabet key is pushed.
          */

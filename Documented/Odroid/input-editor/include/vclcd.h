@@ -144,6 +144,11 @@ int vclcd_delete(struct vclcd *vclcd);
 int vclcd_replace(struct vclcd *vclcd, char c);
 
 /**
+ * Check if full.
+ */
+int vclcd_is_full(struct vclcd *vclcd);
+
+/**
  * Print content of vclcd.
  */
 void vclcd_dump(struct vclcd *vclcd);
