@@ -70,7 +70,10 @@ void setup() {
     fgetc(stdin);
 
 
-    _vclcd_shift(myvclcd, 0, 4, -1);
+//    _vclcd_shift(myvclcd, 1, 3, -1);
+//    _vclcd_shift(myvclcd, 2, 1, -1);
+//    _vclcd_shift(myvclcd, 1, 2, 1);
+    _vclcd_shift(myvclcd, 1, 3, 25);
     vclcd_dump(myvclcd);
     
 
