@@ -278,6 +278,10 @@ int vclcd_insert(struct vclcd *vclcd, char c) {
         return -1;
     }
     
+    if (cursor_at_right_of_last_char) {
+        vclcd->chars_len += 1;
+    }
+    
     vclcd->chars[vclcd->curs_pos] = c;
     
     return 0;
