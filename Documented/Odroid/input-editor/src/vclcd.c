@@ -51,10 +51,10 @@ int _vclcd_clear(struct vclcd *vclcd, uint16_t pixel_center, uint16_t pixel_side
 
 /* Tested 190526 */
 int _vclcd_draw_char(struct vclcd *vclcd, int at, char c, uint16_t pixel) {
-    ASSERTDO((vclcd != NULL), print_error("_vclcd_write: vclcd is null.\n"); return -1);
+    ASSERTDO((vclcd != NULL), print_error("_vclcd_draw_char: vclcd is null.\n"); return -1);
     
     int idx = font_index(c);
-    ASSERTDO((idx != -1), print_error("_vclcd_write: attempting to write wrong character.\n"); return -1);
+    ASSERTDO((idx != -1), print_error("_vclcd_draw_char: attempting to write wrong character: [%c]\n", c); return -1);
 
     const unsigned int      *font_rows = *(font + idx);
     int                     pixel_pos = vclcd_offset(at);
