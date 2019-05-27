@@ -144,6 +144,8 @@ int editor_input(struct editor *editor, int key_index) {
                 break;
                 
             case KEY_SPC:
+                if (_editor_is_vclcd_full(editor)) return 0; /* my mistake :) */
+
                 _editor_on_insert(editor, ' ');
                 _editor_on_cursor_move(editor, +1);
                 break;
