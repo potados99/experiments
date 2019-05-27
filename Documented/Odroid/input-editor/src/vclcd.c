@@ -248,7 +248,7 @@ int vclcd_seek(struct vclcd *vclcd, int offset, int whence) {
             return -1;
     }
     
-    int in_display = (result >= 0 && result < (VCLCD_CHAR_WIDTH * VCLCD_CHAR_HEIGHT));
+    int in_display = (result >= 0 && result < (VCLCD_ROWS * VCLCD_COLS));
     ASSERTDO(in_display,
              print_error("vclcd_cursor_seek: position %d exceeds expected range.\n", result);
              return -1);
