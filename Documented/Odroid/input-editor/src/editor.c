@@ -2,19 +2,6 @@
 #include "verbose.h"
 #include "macros.h"
 
-/*
- struct editor {
- bool initialized;
- 
- bool typing;
- char last_char;
- int last_key;
- 
- struct editor_callbacks callbacks;
- };
- */
-
-
 int _editor_on_cursor_move(struct editor *editor, int delta) {
     return launch_callback(editor->callbacks.on_cursor_move , delta);
 }
