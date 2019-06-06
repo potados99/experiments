@@ -24,7 +24,11 @@ int main(int argc, char *argv[]) {
 	ts_fd = open(EVENTPATH, O_RDONLY); /* do blocking read. */
 	if (ts_fd < 0) return -1;
 
+	printf("opened fds.\n");
+
 	mem = disp_map(dp_fd);
+
+	printf("mapped.\n");
 
 	calibrate(mem, ts_fd, &correction);
 	
