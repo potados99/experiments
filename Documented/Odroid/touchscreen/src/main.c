@@ -30,9 +30,16 @@ int main(int argc, char *argv[]) {
 
 	printf("mapped.\n");
 
+	disp_draw_rect(mem, 0, 0, DISP_WIDTH, DISP_HEIGHT, PIXEL(0, 0, 0));
+
 	calibrate(mem, ts_fd, &correction);
 	
 	
+
+	disp_unmap(mem);
+
+	close(dp_fd);
+	close(ts_fd);
 
 	return 0;
 }	
