@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 unsigned short *disp_map(int fd) {
-	unsigned short mem = (unsigned short *)mmap(NULL, DISP_WIDTH * DISP_HEIGHT * PIXEL_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	unsigned short *mem = (unsigned short *)mmap(NULL, DISP_WIDTH * DISP_HEIGHT * PIXEL_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 	
 	if (mem == MAP_FAILED) {
 		perror("error while mmap()");
