@@ -14,7 +14,7 @@
 unsigned short 		*disp_map(int fd);
 void 			disp_unmap(unsigned short *mem);
 
-int 			disp_draw_point(unsigned short *mem, unsigned short color);
+int 			disp_draw_point(unsigned short *mem, int x, int y, unsigned short color);
 int 			disp_draw_rect(unsigned short *mem, int x, int y, int width, int height, unsigned short color);
 
 #endif /* display_h */

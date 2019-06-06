@@ -1,6 +1,8 @@
 #include "touch.h"
 
 #include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <linux/input.h> /* struct input_event */
 #include <linux/input-event-codes.h> /* EV_ABS, ABS_X ... */
 
