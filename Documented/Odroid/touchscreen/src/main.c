@@ -67,6 +67,7 @@ void calibrate(unsigned short *dp_mem, int ts_fd, struct touch_correction *corre
 			  */
 			if (read_result == 1) {
 				pressed = 0;
+				printf("not pressed\n");
 			}
 			else {	
 				printf("touch_read error!\n");
@@ -78,6 +79,7 @@ void calibrate(unsigned short *dp_mem, int ts_fd, struct touch_correction *corre
 			  * Pressed.
 			  */
 			if (pressed == 0) {
+				printf("just pressed!\n");
 				/**
 				  * JUST pressed.
 				  */
@@ -89,7 +91,7 @@ void calibrate(unsigned short *dp_mem, int ts_fd, struct touch_correction *corre
 				if (index > 2) break;
 				disp_draw_rect(dp_mem, lcd_points[index].x - 1, lcd_points[index].y - 1, 3, 3, PIXEL(255, 255, 255));
 			}
-		
+			printf("being pressed\n");
 			pressed = 1;
 		}
 	}
