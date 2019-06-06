@@ -42,7 +42,7 @@ void calibrate(unsigned short *dp_mem, int ts_fd, struct touch_correction *corre
 	struct touch_event te;
 
 	for (int i = 0; i < 3; ++i) {
-		disp_draw_rect(mem, lcd_points[i].x - 1, lcd_points[i].y - 1, 3, 3, PIXEL(255, 255, 255));
+		disp_draw_rect(dp_mem, lcd_points[i].x - 1, lcd_points[i].y - 1, 3, 3, PIXEL(255, 255, 255));
 	
 		if (touch_read(ts_fd, &te, NULL) != 0) {
 			printf("touch_read error!\n");
@@ -64,7 +64,7 @@ void calibrate(unsigned short *dp_mem, int ts_fd, struct touch_correction *corre
  
 	correction->xd_coef_1 = ((ts_points[0].y * ((ts_points[2].x * lcd_points[1].x) - (ts_points[1].x * lcd_points[2].x))) + 
 			(ts_points[1].y * ((ts_points[0].x * lcd_points[2].x) - (ts_points[2].x * lcd_points[0].x))) + 
-			(ts_point[2].y * ((ts_points[1].x * lcd_points[0].x) - (ts_points[0].x * lcd_points[1].x)))) / k;
+			(ts_points[2].y * ((ts_points[1].x * lcd_points[0].x) - (ts_points[0].x * lcd_points[1].x)))) / k;
 	
 
 	correction->yd_coef_x = (((lcd_points[0].y - lcd_points[2].y) * (ts_points[1].y - ts_points[2].y)) - 
@@ -75,6 +75,6 @@ void calibrate(unsigned short *dp_mem, int ts_fd, struct touch_correction *corre
 	
 	correction->yd_coef_1 = ((ts_points[0].y * ((ts_points[2].x * lcd_points[1].y) - (ts_points[1].x * lcd_points[2].y))) + 
 			(ts_points[1].y * ((ts_points[0].x * lcd_points[2].y) - (ts_points[2].x * lcd_points[0].y))) + 
-			(ts_point[2].y * ((ts_points[1].x * lcd_points[0].y) - (ts_points[0].x * lcd_points[1].y)))) / k;
+			(ts_points[2].y * ((ts_points[1].x * lcd_points[0].y) - (ts_points[0].x * lcd_points[1].y)))) / k;
 }
 
