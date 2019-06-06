@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <linux/input.h> /* struct input_event */
 #include <linux/input-event-codes.h> /* EV_ABS, ABS_X ... */
-
+#include <errno.h>
 
 int touch_read(int fd, struct touch_event *event, struct touch_correction *correction) {
 	if (event == NULL) return -1;
@@ -20,6 +20,9 @@ int touch_read(int fd, struct touch_event *event, struct touch_correction *corre
 	while (done != (READ_X | READ_Y | READ_P)) {
 
 		if (read(fd, &ie, sizeof(struct input_event)) < 0) {
+			if (errno == EAGAIN) {
+				return 1;
+			}
 			perror("read error");
 			return -1;
 		}

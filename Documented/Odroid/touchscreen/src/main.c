@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
 	dp_fd = open(FDPATH, O_RDWR);
 	if (dp_fd < 0) return -1;
 
-	ts_fd = open(EVENTPATH, O_RDONLY); /* do blocking read. */
+	ts_fd = open(EVENTPATH, O_RDONLY | O_NONBLOCK); /* non blocking read. */
 	if (ts_fd < 0) return -1;
 
 	printf("opened fds.\n");
@@ -33,8 +33,7 @@ int main(int argc, char *argv[]) {
 	disp_draw_rect(mem, 0, 0, DISP_WIDTH, DISP_HEIGHT, PIXEL(0, 0, 0));
 
 	calibrate(mem, ts_fd, &correction);
-	
-	
+
 
 	disp_unmap(mem);
 
@@ -51,19 +50,35 @@ void calibrate(unsigned short *dp_mem, int ts_fd, struct touch_correction *corre
 
 	struct point ts_points[3];
 	struct touch_event te;
+	int read_result = 0;
+
+	int pressed = 0;
 
 	for (int i = 0; i < 3; ++i) {
 		disp_draw_rect(dp_mem, lcd_points[i].x - 1, lcd_points[i].y - 1, 3, 3, PIXEL(255, 255, 255));
 
-		if (touch_read(ts_fd, &te, NULL) != 0) {
-			printf("touch_read error!\n");
-			exit(1);
+		read_result = touch_read(ts_fd, &te, NULL);
+	
+		if (read_result != 0) {
+			if (read_result == 1) {
+				pressed = 0;
+			}
+			else {
+				printf("touch_read error!\n");
+				exit(1);
+			}
 		}
-
-		ts_points[i].x = te.x;
-		ts_points[i].y = te.y;
-
-		usleep(1000000);
+		else {
+			if (pressed == 0) {
+				/**
+				  * JUST pressed.
+				  */
+				ts_points[i].x = te.x;
+				ts_points[i].y = te.y;
+			}
+		
+			pressed = 1;
+		}
 	}
 	
 	int k = ((ts_points[0].x - ts_points[2].x) * (ts_points[1].y - ts_points[2].y)) - 
