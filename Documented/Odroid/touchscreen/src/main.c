@@ -1,73 +1,77 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <linux/input.h>
-#include <linux/input-event-codes.h>
 
-#define EVENTPATH "/dev/input/event1"
-#define READ_X	0x01
-#define READ_Y	0x02
-#define READ_P	0x04
+#include "touch.h"
+#include "display.h"
 
-struct touch_event {
-	int x;
-	int y;
-	int pressure;
-};
-
-int touch_read(int fd, struct touch_event *event) {
-	struct input_event ie;
-	int done = 0; /* initialization necessary! */
-
-	while (done != (READ_X | READ_Y | READ_P)) {
-
-		if (read(fd, &ie, sizeof(struct input_event)) < 0) {
-			perror("read error");
-			return -1;
-		}
-
-		if (ie.type == EV_ABS) {
-			if (ie.code == ABS_X) {
-				event->x = ie.value;
-				done |= READ_X;
-			}
-			else if (ie.code == ABS_Y) {
-				event->y = ie.value;
-				done |= READ_Y;
-			}
-			else if (ie.code == ABS_PRESSURE) {
-				event->pressure = ie.value;
-				done |= READ_P;
-			}
-		} 
-
-	}
-
-	return 0;
-}
+void calibrate(unsigned short *dp_mem, int ts_fd,struct touch_correction *correction);
 
 int main(int argc, char *argv[]) {
-	int fd;
-	struct touch_event te;
-	int x;
-	int y;
-	int pressure;
+	int 				ts_fd;
+	int 				dp_fd;
+	unsigned short 			*mem;
+	struct touch_correction 	correction;
 
-	//fd = open(EVENTPATH, O_RDONLY | O_NONBLOCK);
-	fd = open(EVENTPATH, O_RDONLY);
-	if (fd < 0) return -1;
+	/**
+	  * Ready
+	  */
+	dp_fd = open(FDPATH, O_RDWR);
+	if (dp_fd < 0) return -1;
 
-	int count = 0;
-	while (count++ < 1000) {
+	ts_fd = open(EVENTPATH, O_RDONLY); /* do blocking read. */
+	if (ts_fd < 0) return -1;
 
-		if (touch_read(fd, &te) == 0)
-			printf("x: %d, y: %d, pressure: %d\n", te.x, te.y, te.pressure);
-	}
+	mem = disp_map(dp_fd);
 
-	printf("hello world.\n");
-
-	close(fd);
+	calibrate(mem, ts_fd, &correction);
+	
+	
 
 	return 0;
 }	
+
+void calibrate(unsigned short *dp_mem, int ts_fd, struct touch_correction *correction) {
+	struct point lcd_points[3] = {
+		{160, 80}, {80, 160}, {240, 160}
+	};
+
+	struct point ts_points[3];
+	struct touch_event te;
+
+	for (int i = 0; i < 3; ++i) {
+		disp_draw_rect(mem, lcd_points[i].x - 1, lcd_points[i].y - 1, 3, 3, PIXEL(255, 255, 255));
+	
+		if (touch_read(ts_fd, &te, NULL) != 0) {
+			printf("touch_read error!\n");
+			exit(1);
+		}
+
+		ts_points[i].x = te.x;
+		ts_points[i].y = te.y;
+	}
+	
+	int k = ((ts_points[0].x - ts_points[2].x) * (ts_points[1].y - ts_points[2].y)) - 
+		((ts_points[1].x - ts_points[2].x) * (ts_points[0].y - ts_points[2].y));
+
+	correction->xd_coef_x = (((lcd_points[0].x - lcd_points[2].x) * (ts_points[1].y - ts_points[2].y)) - 
+			((lcd_points[1].x - lcd_points[2].x) * (ts_points[0].y - ts_points[2].y))) / k;
+	
+	correction->xd_coef_y = (((ts_points[0].x - ts_points[2].x) * (lcd_points[1].x - lcd_points[2].x)) - 
+			((lcd_points[0].x - lcd_points[2].x) * (ts_points[1].x - ts_points[2].x))) / k;
+ 
+	correction->xd_coef_1 = ((ts_points[0].y * ((ts_points[2].x * lcd_points[1].x) - (ts_points[1].x * lcd_points[2].x))) + 
+			(ts_points[1].y * ((ts_points[0].x * lcd_points[2].x) - (ts_points[2].x * lcd_points[0].x))) + 
+			(ts_point[2].y * ((ts_points[1].x * lcd_points[0].x) - (ts_points[0].x * lcd_points[1].x)))) / k;
+	
+
+	correction->yd_coef_x = (((lcd_points[0].y - lcd_points[2].y) * (ts_points[1].y - ts_points[2].y)) - 
+			((lcd_points[1].y - lcd_points[2].y) * (ts_points[0].y - ts_points[2].y))) / k;
+	
+	correction->yd_coef_y = (((ts_points[0].x - ts_points[2].x) * (lcd_points[1].y - lcd_points[2].y)) - 
+			((lcd_points[1].y - lcd_points[2].y) * (ts_points[1].x - ts_points[2].x))) / k;
+	
+	correction->yd_coef_1 = ((ts_points[0].y * ((ts_points[2].x * lcd_points[1].y) - (ts_points[1].x * lcd_points[2].y))) + 
+			(ts_points[1].y * ((ts_points[0].x * lcd_points[2].y) - (ts_points[2].x * lcd_points[0].y))) + 
+			(ts_point[2].y * ((ts_points[1].x * lcd_points[0].y) - (ts_points[0].x * lcd_points[1].y)))) / k;
+}
+
