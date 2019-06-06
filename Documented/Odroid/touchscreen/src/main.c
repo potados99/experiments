@@ -54,27 +54,39 @@ void calibrate(unsigned short *dp_mem, int ts_fd, struct touch_correction *corre
 
 	int pressed = 0;
 
-	for (int i = 0; i < 3; ++i) {
-		disp_draw_rect(dp_mem, lcd_points[i].x - 1, lcd_points[i].y - 1, 3, 3, PIXEL(255, 255, 255));
+	int index = 0;
+
+	while (index < 3) {
+		disp_draw_rect(dp_mem, lcd_points[index].x - 1, lcd_points[index].y - 1, 3, 3, PIXEL(255, 255, 255));
 
 		read_result = touch_read(ts_fd, &te, NULL);
-	
+
 		if (read_result != 0) {
+			/**
+			  * Not pressed.
+			  */
 			if (read_result == 1) {
 				pressed = 0;
 			}
-			else {
+			else {	
 				printf("touch_read error!\n");
 				exit(1);
 			}
 		}
 		else {
+			/**
+			  * Pressed.
+			  */
 			if (pressed == 0) {
 				/**
 				  * JUST pressed.
 				  */
-				ts_points[i].x = te.x;
-				ts_points[i].y = te.y;
+				ts_points[index].x = te.x;
+				ts_points[index].y = te.y;
+				
+				index++;
+			
+				disp_draw_rect(dp_mem, lcd_points[index].x - 1, lcd_points[index].y - 1, 3, 3, PIXEL(255, 255, 255));
 			}
 		
 			pressed = 1;
