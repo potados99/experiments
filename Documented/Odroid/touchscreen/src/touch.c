@@ -1,5 +1,6 @@
 #include "touch.h"
 
+#include <stdio.h>
 #include <linux/input.h> /* struct input_event */
 #include <linux/input-event-codes.h> /* EV_ABS, ABS_X ... */
 
@@ -53,7 +54,7 @@ int touch_read(int fd, struct touch_event *event, struct touch_correction *corre
 
 	/* Do touch correction. */ 
 	event->x = (correction->xd_coef_x * x) + (correction->xd_coef_y * y) + correction->xd_coef_1;
-	event->y = (correction->yd_coef_x * x) + (correction->yd_coef_y * y) + correction_yd_coef_1;
+	event->y = (correction->yd_coef_x * x) + (correction->yd_coef_y * y) + correction->yd_coef_1;
 	event->pressure= p;
 
 	return 0;
