@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
 
+#include "metric.h"
 #include "touch.h"
 #include "display.h"
 
