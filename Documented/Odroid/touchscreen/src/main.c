@@ -86,6 +86,7 @@ void calibrate(unsigned short *dp_mem, int ts_fd, struct touch_correction *corre
 				
 				index++;
 			
+				if (index > 2) break;
 				disp_draw_rect(dp_mem, lcd_points[index].x - 1, lcd_points[index].y - 1, 3, 3, PIXEL(255, 255, 255));
 			}
 		
