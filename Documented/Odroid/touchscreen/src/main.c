@@ -54,7 +54,7 @@ void calibrate(unsigned short *dp_mem, int ts_fd, struct touch_correction *corre
 
 	for (int i = 0; i < 3; ++i) {
 		disp_draw_rect(dp_mem, lcd_points[i].x - 1, lcd_points[i].y - 1, 3, 3, PIXEL(255, 255, 255));
-	
+
 		if (touch_read(ts_fd, &te, NULL) != 0) {
 			printf("touch_read error!\n");
 			exit(1);
@@ -62,6 +62,8 @@ void calibrate(unsigned short *dp_mem, int ts_fd, struct touch_correction *corre
 
 		ts_points[i].x = te.x;
 		ts_points[i].y = te.y;
+
+		usleep(1000000);
 	}
 	
 	int k = ((ts_points[0].x - ts_points[2].x) * (ts_points[1].y - ts_points[2].y)) - 
