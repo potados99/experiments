@@ -18,12 +18,6 @@
  */
 
 /**
- * Get MSB of given integer x.
- */
-#define MSB(x) \
-	(x & (1 << ((sizeof(typeof(x)) << 3) - 1)) /* 0x1...0000 */)
-
-/**
  * Check if overflow/underflow occurs after adding y to x.
  *
  * If the x and the y has different sign, it will never happen
@@ -38,9 +32,13 @@ bool tadd_ok(int x, int y) {
 	return (MSB(x) != MSB(y) || MSB(x + y) == MSB(x));
 }	
 
+/**
+ * We can use the tadd_ok logic but under condition that y and -y is not same.
+ * There is one case the condition not met: T_MIN, in binary 0x1000..0000
+ */
 bool tsub_ok(int x, int y) {
-	// TODO
-	return true;
+	
+	return (y != (1 << 31) && tadd_ok(x, -y));
 }
 
 bool tmult_ok(int x, int y) {
@@ -54,11 +52,12 @@ bool tmult_ok(int x, int y) {
  *
  *
  */
-bool div16(int x) {
+int div16(int x) {
+	int int_width = sizeof(int) << 3;
+	
+	int bias = (x >> (int_width - 1)) & 0xF; /* Fill all bits with MSB. 16bit limit. */
 
-	int int_size = sizeof(int) << 3;
-	int bias = ((x >> int_size)  )
-
+	return (x + bias) >> (1 << 4);
 }
 
 /**

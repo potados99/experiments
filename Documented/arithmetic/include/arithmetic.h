@@ -4,6 +4,12 @@
 #include <stdbool.h>
 
 /**
+ * Get MSB of given integer x.
+ */
+#define MSB(x) \
+	(x & (1 << ((sizeof(typeof(x)) << 3) - 1)) /* 0x1...0000 */)
+
+/**
  * Check overflow
  *
  * @returan whether it is okay to invoke the operation or not.
