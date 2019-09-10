@@ -1,7 +1,9 @@
-# Experiment on []
+# Arithmetics in C
 
-## Purpose
+This work is derived from System Programming course: week 2.
 
 ## Sources
 
-## Conclusion
+- include/arithmetic.h
+- src/arithmetic.h
+- src/main.c
