@@ -39,10 +39,3 @@ test_function	testv[] = {
 	sub_test,
 	mult_test
 };
-
-void run_tests() {
-	for (size_t i = 0; i < testc; ++i) {
-		printf("==== Test %zu Started ====\n", i);
-		printf("==== Test %zu %s ====\n\n", i, testv[i]() ? "Succeeded" : "Failed");
-	}
-}
