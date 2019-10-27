@@ -8,8 +8,7 @@ def tell(sock, what):
 
 
 def hear(sock):
-    data = sock.recv(1024).decode()
-    return data
+    return sock.recv(1024).decode()
 
 
 def not_good():
@@ -34,7 +33,7 @@ def tell_and_expect(sock, what, expectation):
 server = input("Server address: ")
 port = int(input("Server port: "))
 
-# Only for SMTP.
+# Only for SMTP, without auth.
 
 client_socket = socket(AF_INET, SOCK_STREAM)
 client_socket.connect((server, port))
@@ -57,5 +56,7 @@ tell(client_socket, "To: " + mail_to)
 
 body = input("Body: ")
 tell_and_expect(client_socket, "\r\n" + body + "\r\n.\r\n", 250)
+
+print("\nMail successfully sent.\n")
 
 client_socket.close()

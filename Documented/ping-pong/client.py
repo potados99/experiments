@@ -26,8 +26,11 @@ while True:
 
     try:
         data, addr = client_socket.recvfrom(10)
-        elapsed = millis() - time_sent
-        after_response(elapsed)
+        if data.decode() == "pong":
+            elapsed = millis() - time_sent
+            after_response(elapsed)
+        else:
+            no_response()
 
     except timeout:
         no_response()
