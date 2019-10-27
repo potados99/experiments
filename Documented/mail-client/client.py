@@ -1,6 +1,5 @@
 from socket import *
 from sys import *
-from time import *
 
 
 def tell(sock, what):
